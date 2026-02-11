@@ -2,9 +2,9 @@ name: Playwright Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ styling-pages-in-astro ]
   pull_request:
-    branches: [ main ]
+    branches: [ styling-pages-in-astro ]
 
 jobs:
   call-build-and-deploy:
