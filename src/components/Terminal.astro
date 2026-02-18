@@ -1,0 +1,52 @@
+---
+// src/components/Terminal.astro
+---
+<div class="terminal-container">
+  <div class="terminal-header">
+    <span class="button red"></span>
+    <span class="button yellow"></span>
+    <span class="button green"></span>
+    <span class="title">user@astro: ~</span>
+  </div>
+  <div class="terminal-body">
+    <slot /> <!-- Content goes here -->
+  </div>
+</div>
+
+<style>
+  .terminal-container {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    max-width: 800px;
+    margin: 20px auto;
+  }
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .button {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  .red { background-color: #ff5f56; }
+  .yellow { background-color: #ffbd2e; }
+  .green { background-color: #27c93f; }
+  .title {
+    color: #888;
+    font-size: 0.9rem;
+    margin-left: 10px;
+  }
+  .terminal-body {
+    padding: 10px;
+    line-height: 1.5;
+  }
+</style>
