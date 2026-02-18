@@ -1,9 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
 const pageTitle = "Home";
+import Terminal from '../components/Terminal.astro';
 ---
 
-<BaseLayout pageTitle={pageTitle}>
-	<!-- astro slot -->
-	<p>Welcome to the Home page!</p>
-</BaseLayout>
+
+  <!-- The meta refresh tag for a timed redirect -->
+  <meta http-equiv="refresh" content="5; url=about" />
+</head>
+
+
+<Terminal>
+<p>> npm create astro@latest</p>
+<p style="color: #27c93f;">✔ Success! Project initialized.</p>
+</Terminal>
