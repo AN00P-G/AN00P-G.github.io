@@ -1,0 +1,22 @@
+:root {
+    --background-black: #222;
+}
+
+body {
+    background: var(--background-black);
+}
+
+main {
+    margin: 5rem;
+    padding: 2.5rem;
+    background: var(--background-black);
+    border: solid 3px #D9D9D9;
+    border-radius: 8px;
+}
+
+#screen {
+    border: solid 3px #D9D9D9;
+    border-radius: 8px;
+    padding: 2.5rem;
+    color: #fff;
+}
