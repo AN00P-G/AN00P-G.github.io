@@ -1,0 +1,36 @@
+---
+// src/layouts/Layout.astro
+import { getImage } from 'astro:assets';
+import backgroundImage from '../components/1.png';
+
+// Generate the optimized image object
+const optimizedBackground = await getImage({
+  src: backgroundImage,
+  format: 'webp', // Optional: specify format for better performance
+});
+
+const { title } = Astro.props; // Assuming you have props
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>{title}</title>
+    <style define:vars={{ backgroundUrl: `url(${optimizedBackground.src})` }}>
+        /* Global styles can also go here or in a separate file */
+        body {
+            background-image: var(--backgroundUrl);
+            background-size: cover; /* Ensures the image covers the whole page */
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Keeps image fixed when scrolling */
+            margin: 10rem; /* Remove default body margin */
+            padding: 10rem;
+        }
+    </style>
+</head>
+<body>
+    <slot />
+</body>
+</html>
