@@ -15,13 +15,14 @@ import Footer from '../components/Footer.astro';
 		<title>{pageTitle}</title>
 	</head>
 	<body>
-		<Header />
 		<main>
-			<section id = "screen"></div>
-            	<h1>{pageTitle}</h1>
-            	<slot/>
+			<section id="screen">
+				<Header />
+		            <div class="screen-content">
+		            	<h1>{pageTitle}</h1>
+		            	<slot />
+		            </div>
 			</section>
 		</main>	
-		<Footer />
 	</body>
 </html>

@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro"
 const pageTitle = "Home";
 import Terminal from '../components/Terminal.astro';
+import Background from "../components/background.astro";
 ---
 
 
@@ -9,8 +10,10 @@ import Terminal from '../components/Terminal.astro';
   <meta http-equiv="refresh" content="5; url=about" />
 </head>
 
+<BaseLayout>
 
 <Terminal>
 <p>> npm create astro@latest</p>
 <p style="color: #27c93f;">✔ Success! Project initialized.</p>
 </Terminal>
+</BaseLayout>
