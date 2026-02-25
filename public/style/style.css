@@ -165,7 +165,6 @@ main {
     border-radius: 8px;
     padding: 0;
     color: #fff;
-    overflow: hidden;
 }
 
 .screen-content {
@@ -176,11 +175,13 @@ main {
     main {
         margin: 1rem;
         padding: 1rem;
-        min-height: 100vh;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: calc(100vh - 4rem);
+        overflow: hidden;
+
+
 
     }
 
