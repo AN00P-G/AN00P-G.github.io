@@ -148,46 +148,60 @@ body.menu-open .screen-content {
 }
 
 
+body[data-page="About Me :)"] .screen-content > h1 {
+    display: none;
+}
 
 .about-row {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: flex-start;
     gap: 2rem;
+}
+
+.about-left {
+    flex: 1 1 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.about-title {
+    font-size: 2.6rem;
+    margin: 0;
 }
 
 .about-copy {
     color: #fff;
     line-height: 1.6;
-    flex: 1 1 60%;
-    font-size: 1.75rem;
+    font-size: 1.4rem;
 }
 
 .about-copy p {
-    margin: 2rem;
+    margin: 0;
     line-height: 1.8;
 }
 
-body[data-page="About Me :)"] .screen-content > h1 {
-    display: none;
-}
-
-.about-title {
-    font-size: 2.6rem;
-    margin: 0 0 1.25rem 0;
-}
-
 .about-photo-wrap {
-    flex: 0 0 30%;
+    flex: 0 0 auto;
     display: flex;
-    justify-content: flex-end;
-    align-self: flex-start;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.about-name {
+    color: #d9d9d9;
+    font-size: 1rem;
+    text-align: center;
+    margin: 0;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 .about-photo {
     width: 100%;
     height: auto;
-    max-width: 25rem;
+    max-width: 20rem;
     border: 3px solid #d9d9d9;
     border-radius: 8px;
 }
@@ -245,11 +259,6 @@ main::before {
     html, body {
         height: 100dvh;
         overflow: hidden;
-    }
-
-    body {
-        align-items: center;
-        justify-content: center;
     }
 
     main {
@@ -324,20 +333,33 @@ main::before {
         gap: 1.25rem;
     }
 
-    .about-photo-wrap {
-        order: 1;
-        flex: 0 0 auto;
+    .about-left {
         width: 100%;
-        justify-content: center;
+        order: 1;
+        align-items: center;
+        text-align: center;
+    }
+
+    .about-title {
+        font-size: 2rem;
+    }
+
+    .about-copy {
+        font-size: 1.1rem;
+        order: 2;
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    .about-copy p {
+        margin: 0;
+    }
+
+    .about-photo-wrap {
+        order: 3;
     }
 
     .about-photo {
         max-width: 14rem;
-    }
-
-    .about-copy {
-        order: 2;
-        flex: 1 1 auto;
-        width: 100%;
     }
 }
