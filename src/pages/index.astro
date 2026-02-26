@@ -1,19 +1,88 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro"
+import BaseLayout from "../layouts/BaseLayout.astro";
 const pageTitle = "Home";
-import Terminal from '../components/Terminal.astro';
-import Background from "../components/background.astro";
+import Terminal from "../components/Terminal.astro";
 ---
 
-
-  <!-- The meta refresh tag for a timed redirect -->
-  <meta http-equiv="refresh" content="5; url=about" />
-</head>
-
 <BaseLayout>
+  <Fragment slot="head">
+    <meta http-equiv="refresh" content="5; url=about" />
+  </Fragment>
 
-<Terminal>
-<p>> npm create astro@latest</p>
-<p style="color: #27c93f;">✔ Success! Project initialized.</p>
-</Terminal>
- 
+  <Terminal>
+    <pre class="ascii-art" aria-label="ASCII art banner">
+    ___                               ______                             _     
+   /   |  ____  ____  ____  ____     / ____/_  ___________ _____ _____ _(_)___ 
+  / /| | / __ \/ __ \/ __ \/ __ \   / / __/ / / / ___/ __ `/ __ `/ __ `/ / __ \
+ / ___ |/ / / / /_/ / /_/ / /_/ /  / /_/ / /_/ / /  / /_/ / /_/ / /_/ / / / / /
+/_/  |_/_/ /_/\____/\____/ .___/   \____/\__,_/_/   \__,_/\__, /\__,_/_/_/ /_/ 
+                        /_/                              /____/                
+    </pre>
+
+    <div id="live-log" class="live-log" aria-live="polite"></div>
+  </Terminal>
+
+  <script>
+    const prompt = 'anoop@portfolio:~$';
+    const logEl = document.querySelector('#live-log');
+    const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const append = (type, line, opts = {}) => {
+      if (!logEl) return;
+      const el = document.createElement('div');
+      el.className = `log-line ${type}`;
+
+      if (type === 'cmd') {
+        const promptEl = document.createElement('span');
+        promptEl.className = 'prompt';
+        promptEl.textContent = opts.promptText ? `${opts.promptText} ` : '';
+
+        const cmdEl = document.createElement('span');
+        cmdEl.className = 'cmd-text';
+        cmdEl.textContent = line;
+
+        el.append(promptEl, cmdEl);
+      } else {
+        el.textContent = line;
+      }
+
+      logEl.appendChild(el);
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    const formatMs = (ms) => `${Math.max(ms, 0).toFixed(0)}ms`;
+
+    const run = async () => {
+      const target = window.location.origin;
+      await pause(500);
+      append('cmd', `echo Welcome to my portfolio!`, { promptText: prompt });
+      append('info', '> Welcome to my portfolio! Feel free to look around and check out my projects....');
+      await pause(1000);
+      append('cmd', `curl -I ${target}`, { promptText: prompt });
+      append('info', `> Resolving ${window.location.hostname}...`);
+      await pause(500);
+      append('step', '> Connecting...');
+      await pause(500);
+      append('step', '> TLS handshake complete');
+      await pause(500);
+      append('step', '> Sending request');
+
+      const start = performance.now();
+      try {
+        const res = await fetch(target, { cache: 'no-store' });
+        const text = await res.text();
+        const dur = performance.now() - start;
+        append('info', `> HTTP ${res.status} ${res.statusText || ''}`.trim());
+        append('info', `> Downloaded ${text.length} bytes in ${formatMs(dur)}`);
+        append('step', '> Rendering page...');
+        await pause(500);
+        append('ok', '✔ Done');
+        append('info', '> Redirecting to about page in...');
+      } catch (err) {
+        append('error', `! Request failed: ${err?.message || err}`);
+      }
+    };
+
+    run();
+  </script>
+</BaseLayout>

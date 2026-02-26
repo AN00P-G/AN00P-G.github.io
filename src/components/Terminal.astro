@@ -6,30 +6,35 @@
     <span class="button red"></span>
     <span class="button yellow"></span>
     <span class="button green"></span>
-    <span class="title">user@astro: ~</span>
+    <span class="title">anoop@portfolio:~</span>
   </div>
   <div class="terminal-body">
-    <slot /> <!-- Content goes here -->
+    <slot />
+
+    <!-- Content goes here -->
   </div>
 </div>
  
 <style>
   .terminal-container {
-    background-color: #1e1e1e;
-    color: #f1f1f1;
+    background: radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 10%, rgba(0, 255, 255, 0.06), transparent 22%),
+                #0f1117;
+    color: #e8eaf0;
     font-family: 'Courier New', Courier, monospace;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    max-width: 800px;
-    margin: 20px auto;
+    border: 1px solid #1f2433;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    max-width: 900px;
+    margin: 24px auto;
   }
   .terminal-header {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #333;
-    padding-bottom: 8px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid #1f2433;
+    padding: 8px 0 10px;
+    margin-bottom: 12px;
   }
   .button {
     height: 12px;
@@ -41,12 +46,36 @@
   .yellow { background-color: #ffbd2e; }
   .green { background-color: #27c93f; }
   .title {
-    color: #888;
-    font-size: 0.9rem;
+    color: #7f8ba3;
+    font-size: 0.95rem;
     margin-left: 10px;
   }
   .terminal-body {
-    padding: 10px;
-    line-height: 1.5;
+    padding: 6px 2px 2px;
+    line-height: 1.55;
   }
+  :global(.live-log) {
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre-wrap;
+    margin: 0;
+    padding: 0 6px 4px;
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-color: #2c3345 #11141b;
+    scrollbar-width: thin;
+  }
+  :global(.live-log::-webkit-scrollbar) { width: 6px; }
+  :global(.live-log::-webkit-scrollbar-track) { background: #11141b; }
+  :global(.live-log::-webkit-scrollbar-thumb) { background: #2c3345; border-radius: 6px; }
+  :global(.log-line) { margin: 0; padding: 0; }
+  :global(.log-line + .log-line) { margin-top: 4px; }
+  :global(.prompt) { color: #ff7ac6; }
+  :global(.cmd-text) { color: #7ce7ff; }
+  :global(.cmd) { color: #7ce7ff; }
+  :global(.info) { color: #8de1ff; }
+  :global(.step) { color: #ffd166; }
+  :global(.ok) { color: #6ef2b6; }
+  :global(.warn) { color: #f4c95d; }
+  :global(.error) { color: #ff6b81; }
+  :global(.ascii-art) { color: #ffffff; }
 </style>
