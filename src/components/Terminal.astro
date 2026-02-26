@@ -31,6 +31,9 @@
     margin: 24px auto;
     height: 600px;
     max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
   .terminal-header {
     display: flex;
@@ -57,7 +60,9 @@
     padding: 6px 2px 2px;
     line-height: 1.55;
     flex: 1 1 auto;
-    overflow: auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   :global(.live-log) {
     font-family: 'Courier New', Courier, monospace;
@@ -82,5 +87,13 @@
   :global(.ok) { color: #6ef2b6; }
   :global(.warn) { color: #f4c95d; }
   :global(.error) { color: #ff6b81; }
-  :global(.ascii-art) { color: #ffffff; }
+  :global(.ascii-art) {
+    color: #ffffff;
+    font-size: clamp(0.2rem, 1.5vw, 0.9rem);
+    line-height: 1.2;
+    white-space: pre;
+    max-width: 100%;
+    overflow: hidden;
+    display: block;
+  }
 </style>
