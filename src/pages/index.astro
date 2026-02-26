@@ -84,7 +84,7 @@ import Terminal from "../components/Terminal.astro";
         await pause(1000);
         append('info', '> Redirecting to about page in 1 sec...');
         await pause(1000);
-        //window.location.href = '/about';
+        window.location.href = '/about';
       } catch (err) {
         append('error', `! Request failed: ${err?.message || err}`);
       }
