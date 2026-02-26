@@ -15,7 +15,7 @@ import Footer from '../components/Footer.astro';
 		<title>{pageTitle}</title>
 		<slot name="head" />
 	</head>
-	<body>
+	<body data-page={pageTitle}>
 		<main>
 			<section id="screen">
 				<Header />

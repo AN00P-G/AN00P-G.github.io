@@ -26,8 +26,11 @@
     border-radius: 10px;
     padding: 12px;
     box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    max-width: 900px;
+    width: 1000px;
+    max-width: 100%;
     margin: 24px auto;
+    height: 600px;
+    max-height: 90vh;
   }
   .terminal-header {
     display: flex;
@@ -53,6 +56,8 @@
   .terminal-body {
     padding: 6px 2px 2px;
     line-height: 1.55;
+    flex: 1 1 auto;
+    overflow: auto;
   }
   :global(.live-log) {
     font-family: 'Courier New', Courier, monospace;

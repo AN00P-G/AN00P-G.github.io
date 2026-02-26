@@ -5,9 +5,6 @@ import Terminal from "../components/Terminal.astro";
 ---
 
 <BaseLayout>
-  <Fragment slot="head">
-    <meta http-equiv="refresh" content="5; url=about" />
-  </Fragment>
 
   <Terminal>
     <pre class="ascii-art" aria-label="ASCII art banner">
@@ -77,7 +74,17 @@ import Terminal from "../components/Terminal.astro";
         append('step', '> Rendering page...');
         await pause(500);
         append('ok', '✔ Done');
-        append('info', '> Redirecting to about page in...');
+        append('info', '> Redirecting to about page in 5 sec...');
+        await pause(1000);
+        append('info', '> Redirecting to about page in 4 sec...');
+        await pause(1000);
+        append('info', '> Redirecting to about page in 3 sec...');
+        await pause(1000);
+        append('info', '> Redirecting to about page in 2 sec...');
+        await pause(1000);
+        append('info', '> Redirecting to about page in 1 sec...');
+        await pause(1000);
+        window.location.href = '/about';
       } catch (err) {
         append('error', `! Request failed: ${err?.message || err}`);
       }

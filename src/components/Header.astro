@@ -4,7 +4,7 @@
 	<div class="header-left">
 		<div class="header-menu">
 		<input type="checkbox" id="menu-toggle" class="menu-toggle" />
-		<label for="menu-toggle" class="menu-button" aria-label="Toggle menu">ᯤ</label>
+		<label for="menu-toggle" class="menu-button" aria-label="Toggle menu">ᯤ Menu</label>
 		<label for="menu-toggle" class="menu-overlay"></label>
 		<aside class="side-menu">
 			<a href="/about">About</a>
@@ -12,8 +12,10 @@
 			<a href="/resume">Resume</a>
 			<a href="/cat">Cat</a>
 			<span class="menu-spacer"></span>
-			<a class="menu-github" href="https://github.com/AN00P-G" target="/_blank">Github</a>
-			<a href="mailto:contact@an00p-g.dev">📧</a>
+			<div class="menu-icons">
+				<a class="menu-github" href="https://github.com/AN00P-G" target="/_blank">👾</a>
+				<a href="mailto:contact@guragain01@allegheny.edu">✉</a>
+			</div>
 		</aside>
 		</div>
 	</div>
@@ -21,23 +23,36 @@
 		<span class="header-clock">--:--</span>
 		<span class="header-date">---</span>
 	</div>
-	<div class="header-right">
+	<div class="header-right" aria-label="Status indicators">
+		<span class="Bluetooth">ᛒ</span>
+		<span class="Sound">🔊</span>
+		<span class="Brightness">🔅</span>
 		<span class="Battery">🔋98%</span>
 	</div>
 </header>
 
 <script>
-  if (typeof window !== 'undefined') {
-    const clockEl = document.querySelector('.header-clock');
-    const dateEl = document.querySelector('.header-date');
-    const fmtTime = new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit' });
-    const fmtDay = new Intl.DateTimeFormat([], { weekday: 'short' });
-    const update = () => {
-      const now = new Date();
-      if (clockEl) clockEl.textContent = fmtTime.format(now);
-      if (dateEl) dateEl.textContent = fmtDay.format(now);
-    };
-    update();
-    setInterval(update, 60000);
-  }
+	if (typeof window !== 'undefined') {
+		const clockEl = document.querySelector('.header-clock');
+		const dateEl = document.querySelector('.header-date');
+		const fmtTime = new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit' });
+		const fmtDay = new Intl.DateTimeFormat([], { weekday: 'short' });
+		const update = () => {
+			const now = new Date();
+			if (clockEl) clockEl.textContent = fmtTime.format(now);
+			if (dateEl) dateEl.textContent = fmtDay.format(now);
+		};
+		update();
+		setInterval(update, 60000);
+
+		const toggle = document.getElementById('menu-toggle');
+		const body = document.body;
+		if (toggle && body) {
+			const syncMenuState = () => {
+				body.classList.toggle('menu-open', toggle.checked);
+			};
+			toggle.addEventListener('change', syncMenuState);
+			syncMenuState();
+		}
+	}
 </script>
