@@ -1,0 +1,140 @@
+---
+// src/components/App.astro
+// A reusable Linux-style desktop window chrome.
+//
+// Props:
+//   title       – text shown in the title bar          (default: "anoop@portfolio: ~")
+//   menuItems   – array of menu label strings          (default: terminal menu)
+//   height      – CSS height of the window             (default: "600px")
+//   width       – CSS max-width of the window          (default: "1000px")
+//   monospace   – use monospace font for the body      (default: false)
+//   noPad       – remove body padding (e.g. for grids) (default: false)
+
+interface Props {
+  title?: string;
+  menuItems?: string[];
+  height?: string;
+  width?: string;
+  monospace?: boolean;
+  noPad?: boolean;
+}
+
+const {
+  title      = "anoop@portfolio: ~",
+  menuItems  = ["File", "Edit", "View", "Help"],
+  height     = "600px",
+  width      = "1000px",
+  monospace  = false,
+  noPad      = false,
+} = Astro.props;
+---
+
+<div
+  class="lw-container"
+  style={`--lw-height:${height}; --lw-width:${width};`}
+>
+  <!-- ── Title bar ── -->
+  <div class="lw-titlebar">
+    <span class="lw-title">{title}</span>
+    <div class="lw-wm-buttons">
+      <span class="lw-btn lw-min" title="Minimize">&#8722;</span>
+      <span class="lw-btn lw-max" title="Maximize">&#9633;</span>
+      <span class="lw-btn lw-close" title="Close">&#10005;</span>
+    </div>
+  </div>
+
+  <!-- ── Menu bar ── -->
+  {menuItems.length > 0 && (
+    <div class="lw-menubar">
+      {menuItems.map((item) => (
+        <span class="lw-menu-item">{item}</span>
+      ))}
+    </div>
+  )}
+
+  <!-- ── Content ── -->
+  <div class={`lw-body${monospace ? " lw-mono" : ""}${noPad ? " lw-nopad" : ""}`}>
+    <slot />
+  </div>
+</div>
+
+<!-- styles in /public/style/style.css -->
+
+<script>
+  // ── Window manager buttons ──
+  document.querySelectorAll<HTMLElement>('.lw-wm-buttons').forEach((btns) => {
+    const win = btns.closest<HTMLElement>('.lw-container')!;
+    const maxBtn = btns.querySelector<HTMLElement>('.lw-max')!;
+
+    btns.querySelector('.lw-close')!.addEventListener('click', () => {
+      win.classList.add('lw-closed');
+    });
+
+    btns.querySelector('.lw-min')!.addEventListener('click', () => {
+      win.classList.remove('lw-maximized');
+      win.classList.toggle('lw-minimized');
+      maxBtn.innerHTML = '&#9633;';
+    });
+
+    maxBtn.addEventListener('click', () => {
+      win.classList.remove('lw-minimized');
+      const isMax = win.classList.toggle('lw-maximized');
+      maxBtn.innerHTML = isMax ? '&#10697;' : '&#9633;';
+    });
+  });
+
+  // ── Drag to move ──
+  document.querySelectorAll<HTMLElement>('.lw-titlebar').forEach((titlebar) => {
+    const win = titlebar.closest<HTMLElement>('.lw-container')!;
+    let dragging = false;
+    let ox = 0, oy = 0;  // cursor offset within window
+
+    const startDrag = (cx: number, cy: number) => {
+      if (win.classList.contains('lw-maximized')) return;
+      // Snap to absolute position at current visual location on first drag
+      if (!win.classList.contains('lw-dragged')) {
+        const parent = win.offsetParent as HTMLElement || document.body;
+        const pRect  = parent.getBoundingClientRect();
+        const wRect  = win.getBoundingClientRect();
+        win.style.left = (wRect.left - pRect.left + parent.scrollLeft) + 'px';
+        win.style.top  = (wRect.top  - pRect.top  + parent.scrollTop)  + 'px';
+        win.style.width = win.offsetWidth + 'px';
+        win.classList.add('lw-dragged');
+      }
+      ox = cx - win.offsetLeft;
+      oy = cy - win.offsetTop;
+      // Float above siblings
+      win.style.zIndex = String(Date.now());
+      dragging = true;
+    };
+
+    const moveDrag = (cx: number, cy: number) => {
+      if (!dragging) return;
+      win.style.left = (cx - ox) + 'px';
+      win.style.top  = (cy - oy) + 'px';
+    };
+
+    const stopDrag = () => { dragging = false; };
+
+    // Mouse
+    titlebar.addEventListener('mousedown', (e) => {
+      if ((e.target as HTMLElement).closest('.lw-wm-buttons')) return;
+      startDrag(e.clientX, e.clientY);
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+    document.addEventListener('mouseup', stopDrag);
+
+    // Touch
+    titlebar.addEventListener('touchstart', (e) => {
+      if ((e.target as HTMLElement).closest('.lw-wm-buttons')) return;
+      const t = e.touches[0];
+      startDrag(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      moveDrag(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchend', stopDrag);
+  });
+</script>

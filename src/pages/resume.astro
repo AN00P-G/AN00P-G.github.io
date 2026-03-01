@@ -1,9 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
 const pageTitle = "Resume";
+import App from "../components/App.astro";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
 	<!-- astro slot -->
+	<App title="Resume" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="900px">
 	<p>Welcome to the Resume page!</p>
+	</App>
 </BaseLayout>

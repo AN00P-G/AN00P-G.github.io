@@ -1,6 +1,7 @@
 ---
 ---
 <header class="screen-header">
+	<!-- Left: Activities / App menu -->
 	<div class="header-left">
 		<div class="header-menu">
 		<input type="checkbox" id="menu-toggle" class="menu-toggle" />
@@ -13,23 +14,30 @@
 			<a href="/cat">Cat</a>
 			<span class="menu-spacer"></span>
 			<div class="menu-icons">
-				<a class="menu-github" href="https://github.com/AN00P-G" target="/_blank">👾</a>
-				<a href="mailto:contact@guragain01@allegheny.edu">✉</a>
+				<a class="menu-github" href="https://github.com/AN00P-G" target="/_blank">👾 Github</a>
+				<a href="https://mail.google.com/mail/?view=cm&fs=1&to=guragain01@allegheny.edu" rel="noopener">✉ Email Me</a>
 			</div>
 		</aside>
 		</div>
 	</div>
+
+	<!-- Center: clock + date -->
 	<div class="header-status">
 		<span class="header-clock">--:--</span>
+		<span class="header-sep">·</span>
 		<span class="header-date">---</span>
 	</div>
+
+	<!-- Right: system tray -->
 	<div class="header-right" aria-label="Status indicators">
-		<span class="Bluetooth">ᛒ</span>
-		<span class="Sound">🔊</span>
-		<span class="Brightness">🔅</span>
-		<span class="Battery">🔋98%</span>
+		<span class="tray-item" title="Bluetooth">ᛒ</span>
+		<span class="tray-item" title="Sound">🔊</span>
+		<span class="tray-item" title="Brightness">🔅</span>
+		<span class="tray-item" title="Battery">🔋<span class="battery-pct">98%</span></span>
 	</div>
 </header>
+
+<!-- styles in /public/style/style.css -->
 
 <script>
 	if (typeof window !== 'undefined') {
