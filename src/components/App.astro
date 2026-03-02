@@ -111,8 +111,28 @@ const {
       const isMax = win.classList.toggle('lw-maximized');
       maxBtn.innerHTML = isMax ? '&#10697;' : '&#9633;';
       if (isMax) {
+        // Save current inline position so we can restore on un-maximize
+        win.dataset.preMaxTop    = win.style.top;
+        win.dataset.preMaxLeft   = win.style.left;
+        win.dataset.preMaxWidth  = win.style.width;
+        win.dataset.preMaxHeight = win.style.height;
         reparentToScreen(win);
+        // Offset from the header bar and taskbar so they stay visible
+        const headerEl  = document.querySelector<HTMLElement>('.screen-header');
+        const taskbarEl = document.querySelector<HTMLElement>('#taskbar');
+        const headerH   = headerEl  ? headerEl.offsetHeight  : 0;
+        const taskbarH  = taskbarEl ? taskbarEl.offsetHeight : 0;
+        win.style.top    = headerH + 'px';
+        win.style.left   = '0';
+        win.style.width  = '100%';
+        win.style.height = `calc(100% - ${headerH}px - ${taskbarH + 10}px)`;
         win.style.zIndex = String(nextZ());
+      } else {
+        // Restore pre-maximize position
+        win.style.top    = win.dataset.preMaxTop    || '';
+        win.style.left   = win.dataset.preMaxLeft   || '';
+        win.style.width  = win.dataset.preMaxWidth  || '';
+        win.style.height = win.dataset.preMaxHeight || '';
       }
     });
   });
