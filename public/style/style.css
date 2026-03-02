@@ -73,7 +73,7 @@ main::before {
 .screen-content {
     padding: 1.5rem;
     flex: 1 1 auto;
-    overflow: auto;
+    overflow: hidden;
     position: relative;    /* needed for App maximize to anchor inside */
 }
 

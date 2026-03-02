@@ -89,22 +89,42 @@ const {
     let dragging = false;
     let ox = 0, oy = 0;  // cursor offset within window
 
-    const startDrag = (cx: number, cy: number) => {
-      if (win.classList.contains('lw-maximized')) return;
-      // Snap to absolute position at current visual location on first drag
+    // Reparent window into .screen-content (if not already) and raise its z-index.
+    // This ensures it floats above all other windows regardless of original DOM nesting.
+    const bringToFront = () => {
+      const screen = document.querySelector<HTMLElement>('.screen-content') || document.body;
       if (!win.classList.contains('lw-dragged')) {
-        const parent = win.offsetParent as HTMLElement || document.body;
-        const pRect  = parent.getBoundingClientRect();
-        const wRect  = win.getBoundingClientRect();
-        win.style.left = (wRect.left - pRect.left + parent.scrollLeft) + 'px';
-        win.style.top  = (wRect.top  - pRect.top  + parent.scrollTop)  + 'px';
-        win.style.width = win.offsetWidth + 'px';
+        const screenRect = screen.getBoundingClientRect();
+        const wRect      = win.getBoundingClientRect();
+        const newLeft    = wRect.left - screenRect.left + screen.scrollLeft;
+        const newTop     = wRect.top  - screenRect.top  + screen.scrollTop;
+        const newWidth   = win.offsetWidth;
+
+        // Freeze the original parent cell so remaining siblings don't shift
+        const cell = win.parentElement as HTMLElement;
+        if (cell && cell !== screen) {
+          cell.style.width  = cell.offsetWidth  + 'px';
+          cell.style.height = cell.offsetHeight + 'px';
+        }
+
+        screen.appendChild(win);
+        win.style.left  = newLeft  + 'px';
+        win.style.top   = newTop   + 'px';
+        win.style.width = newWidth + 'px';
         win.classList.add('lw-dragged');
       }
+      win.style.zIndex = String(Date.now());
+    };
+
+    // Raise on any click/touch of the window (not just titlebar)
+    win.addEventListener('mousedown', bringToFront);
+    win.addEventListener('touchstart', bringToFront, { passive: true });
+
+    const startDrag = (cx: number, cy: number) => {
+      if (win.classList.contains('lw-maximized')) return;
+      bringToFront();
       ox = cx - win.offsetLeft;
       oy = cy - win.offsetTop;
-      // Float above siblings
-      win.style.zIndex = String(Date.now());
       dragging = true;
     };
 
