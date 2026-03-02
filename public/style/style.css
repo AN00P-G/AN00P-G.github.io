@@ -200,17 +200,18 @@ body.menu-open .screen-content {
     top: calc(100% + 6px);
     left: -240px;
     width: 220px;
-    background: #161a27;
-    border: 1px solid #1f2433;
+    background: transparent;
+    border: none;
     border-radius: 8px;
-    padding: 12px 14px;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: 0;
     transition: left 0.22s ease, opacity 0.22s ease;
     z-index: 6;
     opacity: 0;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: none;
 }
 
 .side-menu-title {
@@ -226,16 +227,42 @@ body.menu-open .screen-content {
     margin: 2px 0;
 }
 
+  .wifi-stack {
+    position: relative;
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .wifi-stack a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    line-height: 0;
+  }
+
+  .wifi-stack a img {
+    width: 10rem;
+    height: 10rem;
+    display: block;
+  }
+
+  .wifi-stack a:hover img { opacity: 0.7; }
+
+  .about-icon {}
+  .project-icon {}
+  .resume-icon {}
+  .cat-icon {}
+
+
+
+
 .side-menu a {
-    color: #8a96b0;
-    text-decoration: none;
-    font-size: 0.88rem;
-    padding: 4px 6px;
-    border-radius: 4px;
-    transition: background 0.15s, color 0.15s;
+    line-height: 0;
+    padding: 0;
 }
 
-.side-menu a:hover { background: #1f2a40; color: #c8d0e8; }
+.side-menu a:hover { opacity: 0.7; }
 
 .menu-spacer { flex: 1; min-height: 12px; }
 
@@ -243,12 +270,13 @@ body.menu-open .screen-content {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    size: 5rem;
 }
 
 .menu-icons a {
     color: #8a96b0;
     text-decoration: none;
-    font-size: 0.83rem;
+    font-size: 3rem;
 }
 
 .menu-toggle:checked ~ .menu-overlay { opacity: 1; pointer-events: auto; }
