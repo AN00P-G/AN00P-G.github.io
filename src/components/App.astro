@@ -61,6 +61,8 @@ const {
 <!-- styles in /public/style/style.css -->
 
 <script>
+  let _zTop = 100; // global z-index counter
+
   // ── Window manager buttons ──
   document.querySelectorAll<HTMLElement>('.lw-wm-buttons').forEach((btns) => {
     const win = btns.closest<HTMLElement>('.lw-container')!;
@@ -80,43 +82,45 @@ const {
       win.classList.remove('lw-minimized');
       const isMax = win.classList.toggle('lw-maximized');
       maxBtn.innerHTML = isMax ? '&#10697;' : '&#9633;';
+
+      if (isMax) {
+        reparentToScreen(win);
+        win.style.zIndex = String(++_zTop);
+      }
     });
   });
+
+  function reparentToScreen(win: HTMLElement) {
+    const screen = document.querySelector<HTMLElement>('.screen-content') || document.body;
+    if (!win.classList.contains('lw-dragged')) {
+      const screenRect = screen.getBoundingClientRect();
+      const wRect      = win.getBoundingClientRect();
+      const cell       = win.parentElement as HTMLElement;
+      if (cell && cell !== screen) {
+        cell.style.width  = cell.offsetWidth  + 'px';
+        cell.style.height = cell.offsetHeight + 'px';
+      }
+      win.style.left  = (wRect.left - screenRect.left + screen.scrollLeft) + 'px';
+      win.style.top   = (wRect.top  - screenRect.top  + screen.scrollTop)  + 'px';
+      win.style.width = win.offsetWidth + 'px';
+      win.classList.add('lw-dragged');
+    }
+    // Always re-append to end of screen so it's last in DOM (painted on top).
+    screen.appendChild(win);
+  }
 
   // ── Drag to move ──
   document.querySelectorAll<HTMLElement>('.lw-titlebar').forEach((titlebar) => {
     const win = titlebar.closest<HTMLElement>('.lw-container')!;
     let dragging = false;
-    let ox = 0, oy = 0;  // cursor offset within window
+    let ox = 0, oy = 0;
 
-    // Reparent window into .screen-content (if not already) and raise its z-index.
-    // This ensures it floats above all other windows regardless of original DOM nesting.
     const bringToFront = () => {
-      const screen = document.querySelector<HTMLElement>('.screen-content') || document.body;
-      if (!win.classList.contains('lw-dragged')) {
-        const screenRect = screen.getBoundingClientRect();
-        const wRect      = win.getBoundingClientRect();
-        const newLeft    = wRect.left - screenRect.left + screen.scrollLeft;
-        const newTop     = wRect.top  - screenRect.top  + screen.scrollTop;
-        const newWidth   = win.offsetWidth;
-
-        // Freeze the original parent cell so remaining siblings don't shift
-        const cell = win.parentElement as HTMLElement;
-        if (cell && cell !== screen) {
-          cell.style.width  = cell.offsetWidth  + 'px';
-          cell.style.height = cell.offsetHeight + 'px';
-        }
-
-        screen.appendChild(win);
-        win.style.left  = newLeft  + 'px';
-        win.style.top   = newTop   + 'px';
-        win.style.width = newWidth + 'px';
-        win.classList.add('lw-dragged');
-      }
-      win.style.zIndex = String(Date.now());
+      reparentToScreen(win);
+      win.style.zIndex = String(++_zTop);
     };
 
-    // Raise on any click/touch of the window (not just titlebar)
+    // Raise on any click/touch of the window
     win.addEventListener('mousedown', bringToFront);
     win.addEventListener('touchstart', bringToFront, { passive: true });
 

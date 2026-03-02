@@ -40,13 +40,68 @@ import App from "../components/App.astro";
 
                 <!-- Bottom: contact spanning full width -->
                 <div class="about-contact">
-                        <App title="Contact" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="100%">
-                                <div class="about-contact-links">
-                                        <a class="contact-link" href="https://github.com/AN00P-G" target="_blank" rel="noopener">👾 Github</a>
-                                        <a class="contact-link" href="https://mail.google.com/mail/?view=cm&fs=1&to=guragain01@allegheny.edu" rel="noopener">✉ Email Me</a>
+                        <App title="Contact" menuItems={["File", "Edit", "View", "Help"]} height="360px" width="520px">
+
+                                <!-- Tab buttons -->
+                                <div class="contact-tabs">
+                                        <button class="contact-tab active" data-panel="github">👾 Github</button>
+                                        <button class="contact-tab" data-panel="email">✉ Email Me</button>
                                 </div>
+
+                                <!-- GitHub panel -->
+                                <div class="contact-panel" id="panel-github">
+                                        <div class="gh-card">
+                                                <img class="gh-avatar" src="https://avatars.githubusercontent.com/AN00P-G" alt="GitHub avatar" />
+                                                <div class="gh-info">
+                                                        <p class="gh-name">Anupraj Guragain</p>
+                                                        <p class="gh-username">@AN00P-G</p>
+                                                        <img
+                                                                class="gh-contrib"
+                                                                src="https://ghchart.rshah.org/6ef2b6/AN00P-G"
+                                                                alt="GitHub contribution chart"
+                                                        />
+                                                        <a class="gh-profile-link" href="https://github.com/AN00P-G" target="_blank" rel="noopener">View profile ↗</a>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <!-- Email panel (Formspree) -->
+                                <div class="contact-panel contact-panel--hidden" id="panel-email">
+                                        <form
+                                                class="contact-form"
+                                                action="https://formspree.io/f/xpwrknvp"
+                                                method="POST"
+                                        >
+                                                <input  class="cf-input" type="text"  name="name"      placeholder="Your name"    required />
+                                                <input  class="cf-input" type="email" name="email"     placeholder="Your email"   required />
+                                                <input  class="cf-input" type="text"  name="_subject"  placeholder="Subject"      required />
+                                                <textarea class="cf-input cf-textarea" name="message"  placeholder="Your message" required></textarea>
+                                                <button class="cf-submit" type="submit">Send Message →</button>
+                                        </form>
+                                </div>
+
                         </App>
                 </div>
 
         </div>
 </BaseLayout>
+
+<script>
+  // Tab switching for the Contact app
+  document.querySelectorAll<HTMLElement>('.contact-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const panelId = tab.dataset.panel!;
+
+      // Update active tab
+      tab.closest('.contact-tabs')!.querySelectorAll('.contact-tab').forEach((t) =>
+        t.classList.remove('active')
+      );
+      tab.classList.add('active');
+
+      // Show matching panel, hide others
+      document.querySelectorAll<HTMLElement>('.contact-panel').forEach((p) => {
+        p.classList.toggle('contact-panel--hidden', p.id !== `panel-${panelId}`);
+      });
+    });
+  });
+</script>
