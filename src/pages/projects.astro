@@ -7,7 +7,19 @@ import App from "../components/App.astro";
 
 <BaseLayout pageTitle={pageTitle}>
 	<!-- astro slot -->
-	<App title="Projects" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="900px">
-	<p>Projects|Experiences|Skills</p>
-	</App>
+	<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+		<App title="Projects" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="700px">
+			<h1>Projects</h1>
+		</App>
+	</div>
+	<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+		<App title="Experiences" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="700px">
+			<h1>Experiences</h1>
+		</App>
+	</div>
+	<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+		<App title="Skills" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="700px">
+			<h1>Skills</h1>
+		</App>
+	</div>
 </BaseLayout>
