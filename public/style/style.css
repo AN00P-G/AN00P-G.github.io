@@ -869,7 +869,7 @@ body.menu-open .screen-content {
 @media (max-width: 768px) {
     html, body {
         height: 100dvh;
-        overflow: hidden;
+        overflow: auto;
     }
 
     main {
