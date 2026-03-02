@@ -154,7 +154,7 @@ body.menu-open .screen-content {
     gap: 0;
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.82rem;
-    color: #8a96b0;
+    color: #b8c3d8;
     user-select: none;
 }
 
@@ -262,7 +262,7 @@ body.menu-open .screen-content {
     justify-content: center;
 }
 
-.header-sep { color: #2e3650; }
+.header-sep { color: #5a6580; }
 
 /* Right tray */
 .header-right {
@@ -363,15 +363,15 @@ body.menu-open .screen-content {
     border-radius: 3px;
     font-size: 0.75rem;
     cursor: pointer;
-    color: #8090b0;
-    border: 1px solid #2e3650;
-    background: #242b3d;
+    color: #c4cfea;
+    border: 1px solid #4a5880;
+    background: #2a3248;
     user-select: none;
     transition: background 0.15s, color 0.15s;
 }
 
-.lw-btn:hover       { background: #2e3a55; color: #dde4f0; }
-.lw-close:hover     { background: #7a2030; color: #ffd0d8; border-color: #9a3040; }
+.lw-btn:hover       { background: #3a4a68; color: #ffffff; border-color: #6a7da8; }
+.lw-close:hover     { background: #7a2030; color: #ffd0d8; border-color: #c04060; }
 
 /* Window states */
 .lw-container.lw-minimized .lw-body,
@@ -420,7 +420,7 @@ body.menu-open .screen-content {
     line-height: 1.55;
     flex: 1 1 auto;
     min-height: 0;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
     scrollbar-color: #2c3345 #11141b;
     scrollbar-width: thin;

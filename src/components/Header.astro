@@ -6,7 +6,7 @@
 		<div class="header-menu">
 		<input type="checkbox" id="menu-toggle" class="menu-toggle" />
 		<label for="menu-toggle" class="menu-button" aria-label="Toggle menu">ᯤ Menu</label>
-		<label for="menu-toggle" class="menu-overlay"></label>
+		<div class="menu-overlay" id="menu-overlay" aria-hidden="true"></div>
 		<aside class="side-menu">
 			<div class="wifi-stack" id="wifi-stack">
 				<img src="/icons/about.svg"   class="arc-icon about-icon"   alt="About" />
@@ -50,6 +50,8 @@
 		update();
 		setInterval(update, 60000);
 
+		const overlay = document.getElementById('menu-overlay');
+		if (overlay) overlay.addEventListener('click', () => { if (toggle) { toggle.checked = false; toggle.dispatchEvent(new Event('change')); } });
 		const toggle = document.getElementById('menu-toggle');
 		const body = document.body;
 		if (toggle && body) {
