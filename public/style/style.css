@@ -228,13 +228,24 @@ body.menu-open .screen-content {
 }
 
   .wifi-stack {
-    display: block;
-    width: 10rem;
-    height: 10rem;
-    object-fit: fill;
+    position: relative;
+    width: 12rem;
+    height: 12rem;
   }
 
-  .wifi-stack:hover { opacity: 0.85; }
+  .arc-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12rem;
+    height: 12rem;
+    display: block;
+    transition: filter 0.15s ease;
+  }
+
+  .arc-icon.arc-hover {
+    filter: invert(60%) sepia(90%) saturate(500%) hue-rotate(150deg) brightness(1.3);
+  }
 
 
 

@@ -8,7 +8,12 @@
 		<label for="menu-toggle" class="menu-button" aria-label="Toggle menu">ᯤ Menu</label>
 		<label for="menu-toggle" class="menu-overlay"></label>
 		<aside class="side-menu">
-			<img src="/icons/menu.svg" id="wifi-stack" class="wifi-stack" alt="Menu" />
+			<div class="wifi-stack" id="wifi-stack">
+				<img src="/icons/about.svg"   class="arc-icon about-icon"   alt="About" />
+				<img src="/icons/project.svg" class="arc-icon project-icon" alt="Projects" />
+				<img src="/icons/resume.svg"  class="arc-icon resume-icon"  alt="Resume" />
+				<img src="/icons/cat.svg"     class="arc-icon cat-icon"     alt="Cat" />
+			</div>
 			<span class="menu-spacer"></span>
 		</aside>
 		</div>
@@ -55,24 +60,43 @@
 			syncMenuState();
 		}
 
-		// WiFi menu: route click based on y-position within image
-		// Arcs are positioned in the 2000x2000 canvas at:
-		// about y≈270 (13.5%), project y≈660 (33%), resume y≈1067 (53%), cat y≈1430 (71%)
+		// WiFi stack: y-based hover highlight + click routing
+		// Arcs in 2000x2000 canvas: about y13%, project y33%, resume y53%, cat y71%
 		const wifiStack = document.getElementById('wifi-stack');
 		if (wifiStack) {
-			wifiStack.addEventListener('click', (e) => {
+			const arcMap = [
+				{ cls: 'about-icon',   href: '/about',    max: 0.28 },
+				{ cls: 'project-icon', href: '/projects', max: 0.48 },
+				{ cls: 'resume-icon',  href: '/resume',   max: 0.68 },
+				{ cls: 'cat-icon',     href: '/cat',      max: 1.00 },
+			];
+
+			const getArc = (e) => {
 				const rect = wifiStack.getBoundingClientRect();
-				const yPct = (e.clientY - rect.top) / rect.height; // 0..1 from top
+				const yPct = (e.clientY - rect.top) / rect.height;
+				return arcMap.find(a => yPct <= a.max);
+			};
 
-				let href;
-				if      (yPct < 0.22) href = '/about';
-				else if (yPct < 0.43) href = '/projects';
-				else if (yPct < 0.63) href = '/resume';
-				else                  href = '/cat';
-
-				window.location.href = href;
-			});
 			wifiStack.style.cursor = 'pointer';
+
+			wifiStack.addEventListener('mousemove', (e) => {
+				const hovered = getArc(e);
+				arcMap.forEach(({ cls }) => {
+					const img = wifiStack.querySelector('.' + cls);
+					if (img) img.classList.toggle('arc-hover', hovered?.cls === cls);
+				});
+			});
+
+			wifiStack.addEventListener('mouseleave', () => {
+				arcMap.forEach(({ cls }) => {
+					wifiStack.querySelector('.' + cls)?.classList.remove('arc-hover');
+				});
+			});
+
+			wifiStack.addEventListener('click', (e) => {
+				const arc = getArc(e);
+				if (arc) window.location.href = arc.href;
+			});
 		}
 	}
 </script>
