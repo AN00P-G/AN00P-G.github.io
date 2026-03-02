@@ -992,5 +992,39 @@ body.menu-open .screen-content {
         box-sizing: border-box;
         margin: 0 0 6px;
     }
+
+    /* Cat page */
+    .lw-container:has(.cat-intro),
+    .lw-container:has(.cat-video) {
+        --lw-height: calc(100dvh - 120px);
+        height: calc(100dvh - 120px) !important;
+    }
+
+    .lw-container:has(.cat-intro) .lw-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .cat-intro {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .cat-title {
+        font-size: 2.2rem !important;
+    }
+
+    .cat-intro h2 {
+        font-size: 1.4rem !important;
+        margin: 0.5rem !important;
+        text-align: center;
+    }
 }
 
