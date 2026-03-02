@@ -66,7 +66,10 @@ const {
   if (!(window as any)._lwZTop) (window as any)._lwZTop = 1000;
   const nextZ = () => ++(window as any)._lwZTop;
 
+  const isMobile = () => window.innerWidth <= 768;
+
   function reparentToScreen(win: HTMLElement) {
+    if (isMobile()) return; // keep windows in their flex containers on mobile
     const screen = document.querySelector<HTMLElement>('#screen') || document.body;
     if (win.parentElement !== screen) {
       // Snapshot position relative to #screen before moving
@@ -163,6 +166,7 @@ const {
     }, { passive: true });
 
     const startDrag = (cx: number, cy: number) => {
+      if (isMobile()) return;
       if (win.classList.contains('lw-maximized')) return;
       bringToFront();
       ox = cx - win.offsetLeft;

@@ -71,7 +71,6 @@ main::before {
 }
 
 .screen-content {
-    padding: 0.75rem;
     flex: 1 1 auto;
     overflow: hidden;
     position: relative;    /* needed for App maximize to anchor inside */
@@ -390,7 +389,7 @@ body.menu-open .screen-content {
     line-height: 1.55;
     flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
     scrollbar-color: #2c3345 #11141b;
     scrollbar-width: thin;
@@ -469,18 +468,19 @@ body.menu-open .screen-content {
 .about-left {
     flex: 2 1 1;
     min-width: 0;
+    margin: 1.5rem auto auto auto;
 }
 
 .about-right {
     flex: 0 0 360px;
     width: 360px;
-    margin: auto;
+    margin: 10rem auto 0 auto;
 }
 
 /* Contact row spans full width */
 .about-contact {
     width: fit-content;
-    margin: auto;
+    margin: -18rem auto auto 10rem;
 }
 
 /* ── Contact tab bar ── */
@@ -749,6 +749,7 @@ body.menu-open .screen-content {
 /* ============================================================
    Cat page
    ============================================================ */
+
 #continueBtn {
     background: transparent;
     color: #6ef2b6;
@@ -880,7 +881,8 @@ body.menu-open .screen-content {
 
     #screen {
         border-radius: 30px;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     /* Header */
@@ -921,15 +923,35 @@ body.menu-open .screen-content {
     .header-sep    { display: none; }
 
     /* About layout stacks vertically on mobile */
+    .screen-content {
+        overflow-y: auto;
+    }
+
+    .about-layout {
+        padding: 0.5rem;
+        gap: 0.75rem;
+    }
+
     .about-top {
         flex-direction: column;
         align-items: stretch;
-        gap: 1rem;
+        gap: 0.75rem;
+    }
+
+    .about-left {
+        margin: 0;
     }
 
     .about-right {
         flex: 0 0 auto;
         width: 100%;
+        margin: 0 auto;
+    }
+
+    .about-contact {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
     }
 
     .about-title {
@@ -944,16 +966,29 @@ body.menu-open .screen-content {
         margin: 0;
     }
 
+    .gh-contrib {
+        max-width: 100%;
+    }
+
     /* Taskbar on mobile */
     #taskbar {
         height: 36px;
         padding: 0 6px;
+        position: fixed;
+        bottom: 4rem;
     }
 
     .tb-btn {
         font-size: 0.7rem;
         padding: 2px 7px;
         max-width: 100px;
+    }
+    .lw-container {
+        --lw-width: 100%;
+        width: 100% !important;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 0 0 6px;
     }
 }
 
