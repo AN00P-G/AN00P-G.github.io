@@ -480,6 +480,7 @@ body.menu-open .screen-content {
 /* Contact row spans full width */
 .about-contact {
     width: fit-content;
+    height: fit-content;
     margin: -18rem auto auto 10rem;
 }
 
