@@ -214,26 +214,13 @@ body.menu-open .screen-content {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-.side-menu-title {
-    color: #c8cfe0;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-}
-
-.side-menu-hr {
-    border: none;
-    border-top: 1px solid #1f2433;
-    margin: 2px 0;
-}
-
-  .wifi-stack {
+.wifi-stack {
     position: relative;
     width: 12rem;
     height: 12rem;
-  }
+}
 
-  .arc-icon {
+.arc-icon {
     position: absolute;
     top: 0;
     left: 0;
@@ -241,36 +228,13 @@ body.menu-open .screen-content {
     height: 12rem;
     display: block;
     transition: filter 0.15s ease;
-  }
-
-  .arc-icon.arc-hover {
-    filter: invert(1);
-  }
-
-
-
-
-.side-menu a {
-    line-height: 0;
-    padding: 0;
 }
 
-.side-menu a:hover { opacity: 0.7; }
+.arc-icon.arc-hover {
+    filter: invert(1);
+}
 
 .menu-spacer { flex: 1; min-height: 12px; }
-
-.menu-icons {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    size: 5rem;
-}
-
-.menu-icons a {
-    color: #8a96b0;
-    text-decoration: none;
-    font-size: 3rem;
-}
 
 .menu-toggle:checked ~ .menu-overlay { opacity: 1; pointer-events: auto; }
 .menu-toggle:checked ~ .side-menu   { left: 0; opacity: 1; }
