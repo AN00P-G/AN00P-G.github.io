@@ -61,7 +61,35 @@ const {
 <!-- styles in /public/style/style.css -->
 
 <script>
-  let _zTop = 100; // global z-index counter
+  // Shared z-index counter — start high so taskbar (99998) stays on top
+  // Export to window so Footer.astro taskbar can stay in sync.
+  if (!(window as any)._lwZTop) (window as any)._lwZTop = 1000;
+  const nextZ = () => ++(window as any)._lwZTop;
+
+  function reparentToScreen(win: HTMLElement) {
+    const screen = document.querySelector<HTMLElement>('#screen') || document.body;
+    if (!win.classList.contains('lw-dragged')) {
+      const screenRect = screen.getBoundingClientRect();
+      const wRect      = win.getBoundingClientRect();
+      const cell       = win.parentElement as HTMLElement;
+      if (cell && cell !== screen) {
+        cell.style.width  = cell.offsetWidth  + 'px';
+        cell.style.height = cell.offsetHeight + 'px';
+      }
+      win.style.left  = (wRect.left - screenRect.left + screen.scrollLeft) + 'px';
+      win.style.top   = (wRect.top  - screenRect.top  + screen.scrollTop)  + 'px';
+      win.style.width = win.offsetWidth + 'px';
+      win.classList.add('lw-dragged');
+    }
+    screen.appendChild(win);
+  }
+
+  // Eagerly reparent ALL windows on load so close/minimize never shifts flex layout
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll<HTMLElement>('.lw-container').forEach((win) => {
+      reparentToScreen(win);
+    });
+  });
 
   // ── Window manager buttons ──
   document.querySelectorAll<HTMLElement>('.lw-wm-buttons').forEach((btns) => {
@@ -82,32 +110,12 @@ const {
       win.classList.remove('lw-minimized');
       const isMax = win.classList.toggle('lw-maximized');
       maxBtn.innerHTML = isMax ? '&#10697;' : '&#9633;';
-
       if (isMax) {
         reparentToScreen(win);
-        win.style.zIndex = String(++_zTop);
+        win.style.zIndex = String(nextZ());
       }
     });
   });
-
-  function reparentToScreen(win: HTMLElement) {
-    const screen = document.querySelector<HTMLElement>('.screen-content') || document.body;
-    if (!win.classList.contains('lw-dragged')) {
-      const screenRect = screen.getBoundingClientRect();
-      const wRect      = win.getBoundingClientRect();
-      const cell       = win.parentElement as HTMLElement;
-      if (cell && cell !== screen) {
-        cell.style.width  = cell.offsetWidth  + 'px';
-        cell.style.height = cell.offsetHeight + 'px';
-      }
-      win.style.left  = (wRect.left - screenRect.left + screen.scrollLeft) + 'px';
-      win.style.top   = (wRect.top  - screenRect.top  + screen.scrollTop)  + 'px';
-      win.style.width = win.offsetWidth + 'px';
-      win.classList.add('lw-dragged');
-    }
-    // Always re-append to end of screen so it's last in DOM (painted on top).
-    screen.appendChild(win);
-  }
 
   // ── Drag to move ──
   document.querySelectorAll<HTMLElement>('.lw-titlebar').forEach((titlebar) => {
@@ -117,12 +125,18 @@ const {
 
     const bringToFront = () => {
       reparentToScreen(win);
-      win.style.zIndex = String(++_zTop);
+      win.style.zIndex = String(nextZ());
     };
 
-    // Raise on any click/touch of the window
-    win.addEventListener('mousedown', bringToFront);
-    win.addEventListener('touchstart', bringToFront, { passive: true });
+    // Raise on click — but NOT when clicking the WM buttons (close/min/max)
+    win.addEventListener('mousedown', (e) => {
+      if ((e.target as HTMLElement).closest('.lw-wm-buttons')) return;
+      bringToFront();
+    });
+    win.addEventListener('touchstart', (e) => {
+      if ((e.target as HTMLElement).closest('.lw-wm-buttons')) return;
+      bringToFront();
+    }, { passive: true });
 
     const startDrag = (cx: number, cy: number) => {
       if (win.classList.contains('lw-maximized')) return;

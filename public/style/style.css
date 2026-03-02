@@ -103,7 +103,7 @@ body.menu-open .screen-content {
     border-top-right-radius: 8px;
     position: sticky;
     top: 0; left: 0; right: 0;
-    z-index: 5;
+    z-index: 99999;
     height: 32px;
     padding: 0 8px;
     gap: 0;
@@ -474,12 +474,13 @@ body.menu-open .screen-content {
 .about-right {
     flex: 0 0 360px;
     width: 360px;
+    margin: auto;
 }
 
 /* Contact row spans full width */
 .about-contact {
     width: fit-content;
-    margin: 0 auto;
+    margin: auto;
 }
 
 /* ── Contact tab bar ── */
@@ -692,27 +693,26 @@ body.menu-open .screen-content {
 #taskbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background: rgba(22, 26, 39, 0.88);
-    backdrop-filter: blur(12px);
-    border: 1px solid #2a2f45;
+    justify-content: center;
+    background: #161a27;
+    border: 1px solid #1f2433;
     border-radius: 12px;
-    height: 42px;
+    height: 36px;
     padding: 0 12px;
-    gap: 6px;
+    gap: 4px;
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.78rem;
     color: #8a96b0;
     user-select: none;
-    /* floating, centered */
+    /* floating at bottom, centered */
     position: absolute;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     width: max-content;
     max-width: calc(100% - 40px);
-    z-index: 100;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+    z-index: 99998;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
 }
 
 .taskbar-apps {

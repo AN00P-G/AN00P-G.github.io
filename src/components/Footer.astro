@@ -7,7 +7,6 @@
 </footer>
 
 <script>
-
   function buildTaskbar() {
     const bar = document.getElementById('taskbar-apps');
     if (!bar) return;
@@ -20,32 +19,20 @@
       const btn = document.createElement('button');
       btn.className = 'tb-btn';
       btn.textContent = label;
-      btn.dataset.winIndex = String(i);
-
-      // store reference
       (btn as any)._win = win;
 
       btn.addEventListener('click', () => {
         const isClosed    = win.classList.contains('lw-closed');
         const isMinimized = win.classList.contains('lw-minimized');
 
-        if (isClosed) {
-          // reopen
-          win.classList.remove('lw-closed');
-          win.classList.remove('lw-minimized');
-        } else if (isMinimized) {
-          // restore
-          win.classList.remove('lw-minimized');
+        if (isClosed || isMinimized) {
+          win.classList.remove('lw-closed', 'lw-minimized');
         } else {
-          // already visible → minimize
           win.classList.add('lw-minimized');
         }
-        // Bring to front
-        win.style.zIndex = String(Date.now());
-        // scroll into view (for non-dragged windows)
-        if (!win.classList.contains('lw-dragged')) {
-          win.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+        // Use shared z counter if available, else Date.now()
+        const z = (window as any)._lwZTop != null ? ++(window as any)._lwZTop : Date.now();
+        win.style.zIndex = String(z);
         refreshStates();
       });
 
@@ -67,11 +54,8 @@
     });
   }
 
-  // Build after DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     buildTaskbar();
-
-    // Re-sync whenever a window's class changes (minimize/close/restore)
     const observer = new MutationObserver(refreshStates);
     document.querySelectorAll<HTMLElement>('.lw-container').forEach((win) => {
       observer.observe(win, { attributes: true, attributeFilter: ['class'] });
