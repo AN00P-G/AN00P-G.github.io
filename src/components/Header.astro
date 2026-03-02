@@ -8,12 +8,7 @@
 		<label for="menu-toggle" class="menu-button" aria-label="Toggle menu">ᯤ Menu</label>
 		<label for="menu-toggle" class="menu-overlay"></label>
 		<aside class="side-menu">
-			<div class="wifi-stack">
-				<a href="/about"><img src="/icons/about.svg" class="about-icon" alt="About" /></a>
-				<a href="/projects"><img src="/icons/project.svg" class="project-icon" alt="Projects" /></a>
-				<a href="/resume"><img src="/icons/resume.svg" class="resume-icon" alt="Resume" /></a>
-				<a href="/cat"><img src="/icons/cat.svg" class="cat-icon" alt="Cat" /></a>
-			</div>
+			<img src="/icons/menu.svg" id="wifi-stack" class="wifi-stack" alt="Menu" />
 			<span class="menu-spacer"></span>
 		</aside>
 		</div>
@@ -58,6 +53,26 @@
 			};
 			toggle.addEventListener('change', syncMenuState);
 			syncMenuState();
+		}
+
+		// WiFi menu: route click based on y-position within image
+		// Arcs are positioned in the 2000x2000 canvas at:
+		// about y≈270 (13.5%), project y≈660 (33%), resume y≈1067 (53%), cat y≈1430 (71%)
+		const wifiStack = document.getElementById('wifi-stack');
+		if (wifiStack) {
+			wifiStack.addEventListener('click', (e) => {
+				const rect = wifiStack.getBoundingClientRect();
+				const yPct = (e.clientY - rect.top) / rect.height; // 0..1 from top
+
+				let href;
+				if      (yPct < 0.22) href = '/about';
+				else if (yPct < 0.43) href = '/projects';
+				else if (yPct < 0.63) href = '/resume';
+				else                  href = '/cat';
+
+				window.location.href = href;
+			});
+			wifiStack.style.cursor = 'pointer';
 		}
 	}
 </script>
