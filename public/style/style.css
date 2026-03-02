@@ -15,6 +15,10 @@ html, body {
     margin: 0;
 }
 
+html {
+    overscroll-behavior-y: auto;
+}
+
 body {
     background: var(--bg);
     display: flex;
