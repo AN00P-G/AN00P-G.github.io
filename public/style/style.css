@@ -900,10 +900,11 @@ body.menu-open .screen-content {
         height: 34px;
         padding: 0 10px;
         font-size: 0.85rem;
+        border: white solid 1px;
     }
 
     .side-menu {
-        width: calc(100vw - 24px);
+        width: 180px;
         left: -110vw;
         top: calc(100% + 4px);
         gap: 12px;
@@ -944,15 +945,16 @@ body.menu-open .screen-content {
         gap: 0.75rem;
     }
 
-    .about-left {
-        margin: 0;
-    }
-
     .about-right {
         flex: 0 0 auto;
         width: 100%;
         margin: 0 auto;
     }
+
+    .about-left {
+        margin: 0;
+    }
+
 
     .about-contact {
         width: 100%;
