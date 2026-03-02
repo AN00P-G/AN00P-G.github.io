@@ -509,7 +509,7 @@ body.menu-open .screen-content {
 
 /* ── Contact panels ── */
 .contact-panel { display: block; }
-.contact-panel--hidden { display: none; }
+.contact-panel--hidden { display: none !important; }
 
 /* GitHub profile card */
 .gh-card {
@@ -550,10 +550,89 @@ body.menu-open .screen-content {
 .gh-contrib {
     margin-top: 0.5rem;
     max-width: 340px;
+    width: 100%;
     height: auto;
     border-radius: 6px;
     background: #fff;
     padding: 4px 6px;
+}
+
+/* ── Maximized: fill available space ── */
+
+/* Body becomes a flex column so children can fill it */
+.lw-container.lw-maximized .lw-body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 24px 16px;
+}
+
+/* Contact: tab bar stays small, panel fills the rest */
+.lw-container.lw-maximized .contact-tabs {
+    flex-shrink: 0;
+}
+/* Panel fills remaining height — centered single column */
+.lw-container.lw-maximized .contact-panel {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.5rem;
+}
+/* GitHub card: stacked vertically, centered */
+.lw-container.lw-maximized .gh-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 580px;
+}
+.lw-container.lw-maximized .gh-avatar {
+    width: 100px;
+    height: 100px;
+}
+.lw-container.lw-maximized .gh-info {
+    width: 100%;
+    align-items: center;
+}
+.lw-container.lw-maximized .gh-contrib {
+    max-width: 100%;
+    width: 100%;
+}
+/* Email form: centered, fills width up to comfortable max */
+.lw-container.lw-maximized .contact-form {
+    width: 100%;
+    max-width: 520px;
+}
+.lw-container.lw-maximized .cf-textarea {
+    min-height: 160px;
+}
+
+/* Image window: photo fills the body */
+.lw-container.lw-maximized .about-photo-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 0;
+}
+.lw-container.lw-maximized .about-photo {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* About me text: center with comfortable reading width */
+.lw-container.lw-maximized .about-copy {
+    max-width: 72ch;
+    margin: auto;
+    font-size: 1.1rem;
 }
 
 .gh-profile-link {

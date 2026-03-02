@@ -68,11 +68,12 @@ const {
 
   function reparentToScreen(win: HTMLElement) {
     const screen = document.querySelector<HTMLElement>('#screen') || document.body;
-    if (!win.classList.contains('lw-dragged')) {
+    if (win.parentElement !== screen) {
+      // Snapshot position relative to #screen before moving
       const screenRect = screen.getBoundingClientRect();
       const wRect      = win.getBoundingClientRect();
       const cell       = win.parentElement as HTMLElement;
-      if (cell && cell !== screen) {
+      if (cell) {
         cell.style.width  = cell.offsetWidth  + 'px';
         cell.style.height = cell.offsetHeight + 'px';
       }
@@ -80,8 +81,11 @@ const {
       win.style.top   = (wRect.top  - screenRect.top  + screen.scrollTop)  + 'px';
       win.style.width = win.offsetWidth + 'px';
       win.classList.add('lw-dragged');
+      // Only append when actually moving to a new parent
+      screen.appendChild(win);
     }
-    screen.appendChild(win);
+    // Already in #screen — just update z-index (caller's job), don't re-append
+    // (re-appending during mousedown kills pending click events on children)
   }
 
   // Eagerly reparent ALL windows on load so close/minimize never shifts flex layout
