@@ -56,6 +56,16 @@ const {
   <div class={`lw-body${monospace ? " lw-mono" : ""}${noPad ? " lw-nopad" : ""}`}>
     <slot />
   </div>
+
+  <!-- ── Resize handles ── -->
+  <div class="lw-resize lw-resize-n"></div>
+  <div class="lw-resize lw-resize-s"></div>
+  <div class="lw-resize lw-resize-e"></div>
+  <div class="lw-resize lw-resize-w"></div>
+  <div class="lw-resize lw-resize-ne"></div>
+  <div class="lw-resize lw-resize-nw"></div>
+  <div class="lw-resize lw-resize-se"></div>
+  <div class="lw-resize lw-resize-sw"></div>
 </div>
 
 <!-- styles in /public/style/style.css -->
@@ -202,5 +212,84 @@ const {
       moveDrag(t.clientX, t.clientY);
     }, { passive: true });
     document.addEventListener('touchend', stopDrag);
+  });
+
+  // ── Resize from edges / corners ──
+  document.querySelectorAll<HTMLElement>('.lw-resize').forEach((handle) => {
+    const win = handle.closest<HTMLElement>('.lw-container')!;
+    const MIN_W = 220, MIN_H = 120;
+
+    let resizing = false;
+    let dir = '';
+    let startX = 0, startY = 0;
+    let startW = 0, startH = 0, startLeft = 0, startTop = 0;
+
+    // Figure out which edge/corner this handle represents
+    const dirMap: Record<string, string> = {
+      'lw-resize-n': 'n', 'lw-resize-s': 's',
+      'lw-resize-e': 'e', 'lw-resize-w': 'w',
+      'lw-resize-ne': 'ne', 'lw-resize-nw': 'nw',
+      'lw-resize-se': 'se', 'lw-resize-sw': 'sw',
+    };
+    for (const [cls, d] of Object.entries(dirMap)) {
+      if (handle.classList.contains(cls)) { dir = d; break; }
+    }
+
+    const startResize = (cx: number, cy: number) => {
+      if (win.classList.contains('lw-maximized')) return;
+      reparentToScreen(win);
+      win.style.zIndex = String(nextZ());
+      startX    = cx;
+      startY    = cy;
+      startW    = win.offsetWidth;
+      startH    = win.offsetHeight;
+      startLeft = win.offsetLeft;
+      startTop  = win.offsetTop;
+      resizing  = true;
+    };
+
+    const doResize = (cx: number, cy: number) => {
+      if (!resizing) return;
+      const dx = cx - startX;
+      const dy = cy - startY;
+      let newW = startW, newH = startH, newLeft = startLeft, newTop = startTop;
+
+      if (dir.includes('e')) newW = Math.max(MIN_W, startW + dx);
+      if (dir.includes('s')) newH = Math.max(MIN_H, startH + dy);
+      if (dir.includes('w')) {
+        newW    = Math.max(MIN_W, startW - dx);
+        newLeft = startLeft + (startW - newW);
+      }
+      if (dir.includes('n')) {
+        newH    = Math.max(MIN_H, startH - dy);
+        newTop  = startTop + (startH - newH);
+      }
+
+      win.style.width  = newW    + 'px';
+      win.style.height = newH    + 'px';
+      win.style.left   = newLeft + 'px';
+      win.style.top    = newTop  + 'px';
+    };
+
+    const stopResize = () => { resizing = false; };
+
+    handle.addEventListener('mousedown', (e) => {
+      startResize(e.clientX, e.clientY);
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    document.addEventListener('mousemove', (e) => doResize(e.clientX, e.clientY));
+    document.addEventListener('mouseup', stopResize);
+
+    handle.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      startResize(t.clientX, t.clientY);
+      e.stopPropagation();
+    }, { passive: true });
+    document.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      doResize(t.clientX, t.clientY);
+    }, { passive: true });
+    document.addEventListener('touchend', stopResize);
   });
 </script>
