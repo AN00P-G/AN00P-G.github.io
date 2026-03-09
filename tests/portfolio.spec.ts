@@ -5,6 +5,10 @@ if(!process.env.BASE_URL) {
   process.env.BASE_URL = "http://localhost:4321"
 }
 
+if(!process.env.BASE_URL.includes('about')) {
+    process.env.BASE_URL += "/about"
+}
+
 test('has title', async ({ page }) => {
   await page.goto(process.env.BASE_URL);
   await expect(page).not.toHaveTitle(/Astro/);
@@ -25,26 +29,28 @@ test('has nav', async ({page}) => {
 
 test('has and follows links', async ({page}) => {
   await page.goto(process.env.BASE_URL);
-  await page.getByRole('link', { name: /home/i}).click();
   await page.getByRole('link', { name: /about/i}).click();
+  await page.getByRole('link', { name: /projects/i}).click();
+  await page.getByRole('link', { name: /resume/i}).click();
+  await page.getByRole('link', { name: /cat/i}).click();
 });
 
 test('has footer', async ({page}) => {
   await page.goto(process.env.BASE_URL);
   const footer = page.locator('footer');
-  await expect(footer).not.toBeEmpty();
+  await expect(footer).toBeVisible();
 });
 
 test('has at least one section', async ({page}) => {
   await page.goto(process.env.BASE_URL);
   const section = page.locator('section');
-  await expect(section).not.toBeEmpty();
+  await expect(section).toBeVisible();
 });
 
 test('has at least one paragraph', async ({page}) => {
   await page.goto(process.env.BASE_URL);
-  const para = page.locator('p');
-  await expect(para).not.toBeEmpty();
+  const para = page.locator('p').first();
+  await expect(para).toBeVisible();
 });
 
 test('has a main element', async ({page}) => {
@@ -55,18 +61,18 @@ test('has a main element', async ({page}) => {
 
 test('has an img element', async ({page}) => {
   await page.goto(process.env.BASE_URL);
-  const img = page.getByRole('img');
+  const img = page.getByRole('img').first();
   await expect(img).not.toBeNull();
 });
 
 test('img element has src attribute', async ({page}) => {
   await page.goto(process.env.BASE_URL);
-  const img = page.locator('img');
+  const img = page.locator('img').first();
   await expect(img).toHaveAttribute('src');
 });
 
 test('img element has alt attribute', async ({page}) => {
   await page.goto(process.env.BASE_URL);
-  const img = page.locator('img');
+  const img = page.locator('img').first();
   await expect(img).toHaveAttribute('alt');
 });
