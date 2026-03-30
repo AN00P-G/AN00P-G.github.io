@@ -814,6 +814,22 @@ body.menu-open .screen-content {
 #continueBtn:hover  { background: #6ef2b6; color: #0f1117; transform: scale(1.04); }
 #continueBtn:active { transform: scale(0.97); }
 
+#noBtn {
+    background: transparent;
+    color: #f40606;
+    border: 2px solid #f20404;
+    border-radius: 6px;
+    padding: 12px 40px;
+    font-size: 1.1rem;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: background 0.2s, color 0.2s, transform 0.1s;
+    margin-top: 2rem;
+}
+
+#noBtn:hover  { background: #f20404; color: #ffffff; transform: scale(1.04); }
+#noBtn:active { transform: scale(0.97); }
 
 /* ============================================================
    Taskbar / footer dock
