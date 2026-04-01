@@ -15,8 +15,31 @@ const Slider = ({slides}) => {
     //     return () => clearInterval(interval);
     // })
 
+    const slideLeft = () => {
 
-    
+        return setCurrentIndex(currentIndex - 1);
+    }
+
+    const slideRight = () => {
+
+        return setCurrentIndex(currentIndex + 1);
+    }
+    useEffect(() => {
+        const leftSlideButton = document.getElementById("left-slide");
+        const rightSlideButton = document.getElementById("right-slide");
+        
+        if (leftSlideButton) {
+            leftSlideButton.addEventListener("click", () => {
+                slideLeft();
+            });
+        }
+        if (rightSlideButton) {
+            rightSlideButton.addEventListener("click", () => {
+                slideRight();
+            });
+        }
+    }, [currentIndex]);
+
     return (
         <div className = "image-slider">
             <ul>

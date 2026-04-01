@@ -210,6 +210,40 @@ input:checked + .slider:before {
     transition: 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.full_slider .container {
+    position: relative;
+}
+
+.left-slide{
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    color: var(--webco-printer-black);
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    height: 50vh;
+    width: 10vw;
+}
+
+.right-slide {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    color: var(--webco-printer-black);
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    height: 50vh;
+    width: 10vw;
+}
+
 .auto-suggest {
     list-style-type: none;
     position: absolute;
@@ -332,3 +366,4 @@ input:checked + .slider:before {
   }
 
 }
+
