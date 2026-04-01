@@ -159,6 +159,9 @@ const {
     const win = titlebar.closest<HTMLElement>('.lw-container')!;
     let dragging = false;
     let ox = 0, oy = 0;
+    
+    // Create snap preview overlay
+    let snapPreview: HTMLElement | null = null;
 
     const bringToFront = () => {
       reparentToScreen(win);
@@ -182,15 +185,205 @@ const {
       ox = cx - win.offsetLeft;
       oy = cy - win.offsetTop;
       dragging = true;
+      
+      // Create snap preview if it doesn't exist
+      if (!snapPreview) {
+        snapPreview = document.createElement('div');
+        snapPreview.style.cssText = `
+          position: absolute;
+          border: 3px dashed #6ef2b6;
+          background: rgba(110, 242, 182, 0.1);
+          pointer-events: none;
+          z-index: 9997;
+          display: none;
+          border-radius: 8px;
+        `;
+        const screen = document.querySelector('#screen') || document.body;
+        screen.appendChild(snapPreview);
+      }
     };
 
     const moveDrag = (cx: number, cy: number) => {
       if (!dragging) return;
-      win.style.left = (cx - ox) + 'px';
-      win.style.top  = (cy - oy) + 'px';
+      
+      const screen = document.querySelector('#screen')! as HTMLElement;
+      const screenRect = screen.getBoundingClientRect();
+      const headerEl = document.querySelector<HTMLElement>('.screen-header');
+      const taskbarEl = document.querySelector<HTMLElement>('#taskbar');
+      const headerH = headerEl ? headerEl.offsetHeight : 0;
+      const taskbarH = taskbarEl ? taskbarEl.offsetHeight : 0;
+      
+      let newLeft = cx - ox;
+      let newTop = cy - oy;
+      
+      // Clamp to screen boundaries, accounting for header
+      newLeft = Math.max(0, Math.min(newLeft, screenRect.width - win.offsetWidth));
+      newTop = Math.max(headerH, Math.min(newTop, screenRect.height - win.offsetHeight - taskbarH));
+      
+      win.style.left = newLeft + 'px';
+      win.style.top = newTop + 'px';
+      
+      // Show snap preview based on proximity to edges
+      const winRect = win.getBoundingClientRect();
+      const distToLeft = winRect.left - screenRect.left;
+      const distToRight = screenRect.right - winRect.right;
+      const distToTop = winRect.top - screenRect.top;
+      const distToBottom = screenRect.bottom - winRect.bottom;
+      const SNAP_THRESHOLD = 40;
+      
+      const snapLeft = distToLeft < SNAP_THRESHOLD;
+      const snapRight = distToRight < SNAP_THRESHOLD;
+      const snapTop = distToTop < SNAP_THRESHOLD;
+      const snapBottom = distToBottom < SNAP_THRESHOLD;
+      
+      if (!snapPreview) return;
+      
+      let previewW = 0, previewH = 0, previewL = 0, previewT = 0;
+      let showPreview = false;
+      
+      if (snapLeft && snapTop) {
+        // Top-left quarter
+        previewL = 0;
+        previewT = 0;
+        previewW = screenRect.width / 2;
+        previewH = (screenRect.height - headerH - taskbarH) / 2;
+        showPreview = true;
+      } else if (snapRight && snapTop) {
+        // Top-right quarter
+        previewL = screenRect.width / 2;
+        previewT = 0;
+        previewW = screenRect.width / 2;
+        previewH = (screenRect.height - headerH - taskbarH) / 2;
+        showPreview = true;
+      } else if (snapLeft && snapBottom) {
+        // Bottom-left quarter
+        previewL = 0;
+        previewT = (screenRect.height - headerH - taskbarH) / 2;
+        previewW = screenRect.width / 2;
+        previewH = (screenRect.height - headerH - taskbarH) / 2;
+        showPreview = true;
+      } else if (snapRight && snapBottom) {
+        // Bottom-right quarter
+        previewL = screenRect.width / 2;
+        previewT = (screenRect.height - headerH - taskbarH) / 2;
+        previewW = screenRect.width / 2;
+        previewH = (screenRect.height - headerH - taskbarH) / 2;
+        showPreview = true;
+      } else if (snapLeft) {
+        // Left half
+        previewL = 0;
+        previewT = 0;
+        previewW = screenRect.width / 2;
+        previewH = screenRect.height - headerH - taskbarH;
+        showPreview = true;
+      } else if (snapRight) {
+        // Right half
+        previewL = screenRect.width / 2;
+        previewT = 0;
+        previewW = screenRect.width / 2;
+        previewH = screenRect.height - headerH - taskbarH;
+        showPreview = true;
+      } else if (snapTop) {
+        // Full screen maximize
+        const headerEl  = document.querySelector<HTMLElement>('.screen-header');
+        const taskbarEl = document.querySelector<HTMLElement>('#taskbar');
+        const headerH   = headerEl  ? headerEl.offsetHeight  : 0;
+        const taskbarH  = taskbarEl ? taskbarEl.offsetHeight : 0;
+        win.style.left = '0';
+        win.style.top = '0';
+        win.style.width = screenRect.width + 'px';
+        win.style.height = (screenRect.height - headerH - taskbarH) + 'px';
+      } else if (snapBottom) {
+        // Bottom half
+        previewL = 0;
+        previewT = (screenRect.height - headerH - taskbarH) / 2;
+        previewW = screenRect.width;
+        previewH = (screenRect.height - headerH - taskbarH) / 2;
+        showPreview = true;
+      }
+      
+      if (showPreview && snapPreview) {
+        snapPreview.style.display = 'block';
+        snapPreview.style.left = previewL + 'px';
+        snapPreview.style.top = previewT + 'px';
+        snapPreview.style.width = previewW + 'px';
+        snapPreview.style.height = previewH + 'px';
+      } else if (snapPreview) {
+        snapPreview.style.display = 'none';
+      }
     };
 
-    const stopDrag = () => { dragging = false; };
+    const stopDrag = () => {
+      dragging = false;
+      
+      // Hide preview
+      if (snapPreview) snapPreview.style.display = 'none';
+      
+      // Snap to screen zones if within threshold
+      const screen = document.querySelector('#screen')! as HTMLElement;
+      const screenRect = screen.getBoundingClientRect();
+      const headerEl = document.querySelector<HTMLElement>('.screen-header');
+      const taskbarEl = document.querySelector<HTMLElement>('#taskbar');
+      const headerH = headerEl ? headerEl.offsetHeight : 0;
+      const taskbarH = taskbarEl ? taskbarEl.offsetHeight : 0;
+      const SNAP_THRESHOLD = 40;
+      
+      const winRect = win.getBoundingClientRect();
+      const distToLeft = winRect.left - screenRect.left;
+      const distToRight = screenRect.right - winRect.right;
+      const distToTop = winRect.top - screenRect.top;
+      const distToBottom = screenRect.bottom - winRect.bottom;
+      
+      // Determine which snap zone applies
+      const snapLeft = distToLeft < SNAP_THRESHOLD;
+      const snapRight = distToRight < SNAP_THRESHOLD;
+      const snapTop = distToTop < SNAP_THRESHOLD;
+      const snapBottom = distToBottom < SNAP_THRESHOLD;
+      
+      // Apply snap layouts with proper dimensions
+      const availableW = screenRect.width;
+      const availableH = screenRect.height - headerH - taskbarH;
+      
+      if (snapLeft && snapTop) {
+        win.style.left = '0';
+        win.style.top = '0';
+        win.style.width = (availableW / 2) + 'px';
+        win.style.height = (availableH / 2) + 'px';
+      } else if (snapRight && snapTop) {
+        win.style.left = (availableW / 2) + 'px';
+        win.style.top = '0';
+        win.style.width = (availableW / 2) + 'px';
+        win.style.height = (availableH / 2) + 'px';
+      } else if (snapLeft && snapBottom) {
+        win.style.left = '0';
+        win.style.top = (availableH / 2) + 'px';
+        win.style.width = (availableW / 2) + 'px';
+        win.style.height = (availableH / 2) + 'px';
+      } else if (snapRight && snapBottom) {
+        win.style.left = (availableW / 2) + 'px';
+        win.style.top = (availableH / 2) + 'px';
+        win.style.width = (availableW / 2) + 'px';
+        win.style.height = (availableH / 2) + 'px';
+      } else if (snapLeft) {
+        win.style.left = '0';
+        win.style.width = (availableW / 2) + 'px';
+      } else if (snapRight) {
+        win.style.left = (availableW / 2) + 'px';
+        win.style.width = (availableW / 2) + 'px';
+      } else if (snapTop) {
+        // Top snap: maximize to half-height
+        win.style.left = '0';
+        win.style.top = '0';
+        win.style.width = availableW + 'px';
+        win.style.height = (availableH / 2) + 'px';
+      } else if (snapBottom) {
+        // Bottom half
+        win.style.left = '0';
+        win.style.top = (availableH / 2) + 'px';
+        win.style.width = availableW + 'px';
+        win.style.height = (availableH / 2) + 'px';
+      }
+    };
 
     // Mouse
     titlebar.addEventListener('mousedown', (e) => {
@@ -212,84 +405,5 @@ const {
       moveDrag(t.clientX, t.clientY);
     }, { passive: true });
     document.addEventListener('touchend', stopDrag);
-  });
-
-  // ── Resize from edges / corners ──
-  document.querySelectorAll<HTMLElement>('.lw-resize').forEach((handle) => {
-    const win = handle.closest<HTMLElement>('.lw-container')!;
-    const MIN_W = 220, MIN_H = 120;
-
-    let resizing = false;
-    let dir = '';
-    let startX = 0, startY = 0;
-    let startW = 0, startH = 0, startLeft = 0, startTop = 0;
-
-    // Figure out which edge/corner this handle represents
-    const dirMap: Record<string, string> = {
-      'lw-resize-n': 'n', 'lw-resize-s': 's',
-      'lw-resize-e': 'e', 'lw-resize-w': 'w',
-      'lw-resize-ne': 'ne', 'lw-resize-nw': 'nw',
-      'lw-resize-se': 'se', 'lw-resize-sw': 'sw',
-    };
-    for (const [cls, d] of Object.entries(dirMap)) {
-      if (handle.classList.contains(cls)) { dir = d; break; }
-    }
-
-    const startResize = (cx: number, cy: number) => {
-      if (win.classList.contains('lw-maximized')) return;
-      reparentToScreen(win);
-      win.style.zIndex = String(nextZ());
-      startX    = cx;
-      startY    = cy;
-      startW    = win.offsetWidth;
-      startH    = win.offsetHeight;
-      startLeft = win.offsetLeft;
-      startTop  = win.offsetTop;
-      resizing  = true;
-    };
-
-    const doResize = (cx: number, cy: number) => {
-      if (!resizing) return;
-      const dx = cx - startX;
-      const dy = cy - startY;
-      let newW = startW, newH = startH, newLeft = startLeft, newTop = startTop;
-
-      if (dir.includes('e')) newW = Math.max(MIN_W, startW + dx);
-      if (dir.includes('s')) newH = Math.max(MIN_H, startH + dy);
-      if (dir.includes('w')) {
-        newW    = Math.max(MIN_W, startW - dx);
-        newLeft = startLeft + (startW - newW);
-      }
-      if (dir.includes('n')) {
-        newH    = Math.max(MIN_H, startH - dy);
-        newTop  = startTop + (startH - newH);
-      }
-
-      win.style.width  = newW    + 'px';
-      win.style.height = newH    + 'px';
-      win.style.left   = newLeft + 'px';
-      win.style.top    = newTop  + 'px';
-    };
-
-    const stopResize = () => { resizing = false; };
-
-    handle.addEventListener('mousedown', (e) => {
-      startResize(e.clientX, e.clientY);
-      e.preventDefault();
-      e.stopPropagation();
-    });
-    document.addEventListener('mousemove', (e) => doResize(e.clientX, e.clientY));
-    document.addEventListener('mouseup', stopResize);
-
-    handle.addEventListener('touchstart', (e) => {
-      const t = e.touches[0];
-      startResize(t.clientX, t.clientY);
-      e.stopPropagation();
-    }, { passive: true });
-    document.addEventListener('touchmove', (e) => {
-      const t = e.touches[0];
-      doResize(t.clientX, t.clientY);
-    }, { passive: true });
-    document.addEventListener('touchend', stopResize);
   });
 </script>
