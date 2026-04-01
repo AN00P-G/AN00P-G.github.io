@@ -24,23 +24,7 @@ const Slider = ({slides}) => {
         return setCurrentIndex(currentIndex + 1);
     }
 
-    useEffect(() => {
-        // Here, useEffect renders new buttons _every time_; that results
-        // in a hanging page b/c of the number of binds and elements
-        const leftSlideButton = document.getElementById("left-slide");
-        const rightSlideButton = document.getElementById("right-slide");
-        
-        if (leftSlideButton) {
-            leftSlideButton.addEventListener("click", () => {
-                slideLeft();
-            });
-        }
-        if (rightSlideButton) {
-            rightSlideButton.addEventListener("click", () => {
-                slideRight();
-            });
-        }
-    }, [currentIndex]);
+
 
     return (
         <div className = "image-slider">
@@ -57,8 +41,8 @@ const Slider = ({slides}) => {
                     </li>
                 ))}
             </ul>
-            {/* Button Left */}
-            {/* Button Right */}
+			<button id="left-slide" className="left-slide"><i className="fa-solid fa-arrow-left"></i></button>
+			<button id="right-slide" className="right-slide"><i className="fa-solid fa-arrow-right"></i></button>
         </div>
     );
 }
