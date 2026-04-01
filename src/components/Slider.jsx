@@ -21,10 +21,12 @@ const Slider = ({slides}) => {
     }
 
     const slideRight = () => {
-
         return setCurrentIndex(currentIndex + 1);
     }
+
     useEffect(() => {
+        // Here, useEffect renders new buttons _every time_; that results
+        // in a hanging page b/c of the number of binds and elements
         const leftSlideButton = document.getElementById("left-slide");
         const rightSlideButton = document.getElementById("right-slide");
         
@@ -55,6 +57,8 @@ const Slider = ({slides}) => {
                     </li>
                 ))}
             </ul>
+            {/* Button Left */}
+            {/* Button Right */}
         </div>
     );
 }
