@@ -1,11 +1,7 @@
 ---
-const { title, description } = Astro.props;
+const {excerptTitle} = Astro.props;
 ---
-
-
-<article>
-    <h3>{title}</h3>
-    <p>
-        {description}
-    </p>
+<article class = "article__border_right">
+    <h3>{excerptTitle}</h3>
+    <p><slot /></p>
 </article>
