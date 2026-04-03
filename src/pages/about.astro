@@ -8,8 +8,8 @@ import App from "../components/App.astro";
         <Fragment slot="head">
                 <script>
                         if (typeof window !== 'undefined') {
-                                const nav = performance.getEntriesByType('navigation')[0];
-                                if (nav && nav.type === 'reload') {
+                                const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigation;
+                                if (nav && (nav as any).type === 'reload') {
                                         window.location.replace('/');
                                 }
                         }

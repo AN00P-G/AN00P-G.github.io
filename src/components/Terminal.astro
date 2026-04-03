@@ -1,9 +1,10 @@
 ---
 // src/components/Terminal.astro
-import LinuxWindow from './App.astro';
+import WindowManager from './App.jsx';
 ---
 
-<LinuxWindow
+<WindowManager
+  client:load
   title="anoop@portfolio: ~"
   menuItems={["File", "Edit", "View", "Search", "Terminal", "Help"]}
   height="600px"
@@ -11,6 +12,6 @@ import LinuxWindow from './App.astro';
   monospace={true}
 >
   <slot />
-</LinuxWindow>
+</WindowManager>
 
 <!-- styles in /public/style/style.css -->
