@@ -142,43 +142,39 @@ import Nav from './Nav.astro';
 </header>
 
 <!-- ══════════════════════════════════════════════════════
-     Mobile side drawer  (colorful app grid)
+     Mobile side drawer  (icon-only grid)
 ════════════════════════════════════════════════════════ -->
 <input type="checkbox" id="menu-toggle" class="menu-toggle sr-only" />
-<div class="menu-overlay" id="menu-overlay"></div>
+<div class="menu-overlay" id="menu-overlay" aria-hidden="true"></div>
 <aside class="side-menu" id="side-menu" aria-label="Mobile navigation">
   <p class="side-menu-title">Apps</p>
   <div class="side-app-grid">
-    <a href="/about"    class="side-app" style="--g1:#6366f1;--g2:#a78bfa">
+    <a href="/about"    class="side-app" style="--g1:#6366f1;--g2:#a78bfa" aria-label="About">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
         <circle cx="12" cy="8" r="4"/><path d="M20 20c0-4.4-3.6-8-8-8s-8 3.6-8 8"/>
       </svg>
-      <span>About</span>
     </a>
-    <a href="/projects" class="side-app" style="--g1:#10b981;--g2:#34d399">
+    <a href="/projects" class="side-app" style="--g1:#10b981;--g2:#34d399" aria-label="Projects">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
         <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
       </svg>
-      <span>Projects</span>
     </a>
-    <a href="/resume"   class="side-app" style="--g1:#0ea5e9;--g2:#38bdf8">
+    <a href="/resume"   class="side-app" style="--g1:#0ea5e9;--g2:#38bdf8" aria-label="Resume">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
         <polyline points="14 2 14 8 20 8"/>
       </svg>
-      <span>Resume</span>
     </a>
-    <a href="/cat"      class="side-app" style="--g1:#f43f5e;--g2:#fb923c">
+    <a href="/cat"      class="side-app" style="--g1:#f43f5e;--g2:#fb923c" aria-label="Cat">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
         <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
         <path d="M8 3L6 7"/><path d="M16 3l2 4"/>
         <circle cx="9" cy="12" r="1" fill="white"/><circle cx="15" cy="12" r="1" fill="white"/>
       </svg>
-      <span>Cat</span>
     </a>
   </div>
-  <!-- Accessible text links (required for Playwright) -->
-  <nav class="mobile-nav-list" aria-label="Site navigation">
+  <!-- Hidden text links for Playwright/screen-readers -->
+  <nav class="mobile-nav-list sr-only" aria-label="Site navigation">
     <a href="/about"    class="mobile-nav-link">About</a>
     <a href="/projects" class="mobile-nav-link">Projects</a>
     <a href="/resume"   class="mobile-nav-link">Resume</a>

@@ -1,82 +1,77 @@
 ---
 ---
 
-<!-- ── Desktop Ubuntu dock ── -->
+<!-- ══════════════════════════════════════════════════════
+     Desktop dock  (shows open windows only — no nav links)
+════════════════════════════════════════════════════════ -->
 <footer id="taskbar" class="dock" aria-label="Application dock">
-  <nav class="dock-pinned" aria-label="Navigation">
-
-    <a href="/" class="dock-pin" title="Home" data-dock="home">
-      <div class="dock-icon-wrap" style="--g1:#e95420;--g2:#f97316">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" aria-hidden="true">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-      </div>
-      <span class="dock-tooltip">Home</span>
-    </a>
-
-    <a href="/about" class="dock-pin" title="About" data-dock="about">
-      <div class="dock-icon-wrap" style="--g1:#6366f1;--g2:#a78bfa">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" aria-hidden="true">
-          <circle cx="12" cy="8" r="4"/><path d="M20 20c0-4.4-3.6-8-8-8s-8 3.6-8 8"/>
-        </svg>
-      </div>
-      <span class="dock-tooltip">About</span>
-    </a>
-
-    <a href="/projects" class="dock-pin" title="Projects" data-dock="projects">
-      <div class="dock-icon-wrap" style="--g1:#10b981;--g2:#34d399">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" aria-hidden="true">
-          <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-        </svg>
-      </div>
-      <span class="dock-tooltip">Projects</span>
-    </a>
-
-    <a href="/resume" class="dock-pin" title="Resume" data-dock="resume">
-      <div class="dock-icon-wrap" style="--g1:#0ea5e9;--g2:#38bdf8">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" aria-hidden="true">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
-      </div>
-      <span class="dock-tooltip">Resume</span>
-    </a>
-
-    <a href="/cat" class="dock-pin" title="Cat" data-dock="cat">
-      <div class="dock-icon-wrap" style="--g1:#f43f5e;--g2:#fb923c">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" aria-hidden="true">
-          <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
-          <path d="M8 3L6 7"/><path d="M16 3l2 4"/>
-          <circle cx="9" cy="12" r="1" fill="white"/>
-          <circle cx="15" cy="12" r="1" fill="white"/>
-          <path d="M9 16s1.5 2 3 2 3-2 3-2"/>
-        </svg>
-      </div>
-      <span class="dock-tooltip">Cat</span>
-    </a>
-
-  </nav>
-
-  <div class="dock-sep" aria-hidden="true"></div>
-  <div class="dock-windows" id="taskbar-apps" role="toolbar" aria-label="Open windows"></div>
+  <div class="dock-windows" id="taskbar-apps" role="toolbar" aria-label="Open windows">
+    <span class="dock-placeholder">No open windows</span>
+  </div>
 </footer>
 
-<!-- ── Mobile Android nav bar ── -->
-<div class="android-nav" id="android-nav" role="navigation" aria-label="Android navigation">
-  <button class="android-btn" id="nav-back" title="Back" aria-label="Go back">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-  </button>
-  <a href="/" class="android-btn android-home" id="nav-home" title="Home" aria-label="Go home">
-    <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-  </a>
-  <button class="android-btn" id="nav-recents" title="Recent apps" aria-label="Recent apps">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
-  </button>
-</div>
+<!-- ══════════════════════════════════════════════════════
+     Mobile page navigator  (replaces android 3-button bar)
+════════════════════════════════════════════════════════ -->
+<nav class="mobile-page-nav" id="mobile-page-nav" aria-label="Page navigation">
 
-<!-- ── Mobile App Manager overlay ── -->
+  <a href="/" class="mpn-item" data-mpn="home">
+    <div class="mpn-icon" style="--g1:#e95420;--g2:#f97316">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <polyline points="6 9 10 12 6 15"/>
+        <line x1="12" y1="15" x2="18" y2="15"/>
+      </svg>
+    </div>
+    <span>Home</span>
+  </a>
+
+  <a href="/about" class="mpn-item" data-mpn="about">
+    <div class="mpn-icon" style="--g1:#6366f1;--g2:#a78bfa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <circle cx="12" cy="8" r="4"/><path d="M20 20c0-4.4-3.6-8-8-8s-8 3.6-8 8"/>
+      </svg>
+    </div>
+    <span>About</span>
+  </a>
+
+  <a href="/projects" class="mpn-item" data-mpn="projects">
+    <div class="mpn-icon" style="--g1:#10b981;--g2:#34d399">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+      </svg>
+    </div>
+    <span>Projects</span>
+  </a>
+
+  <a href="/resume" class="mpn-item" data-mpn="resume">
+    <div class="mpn-icon" style="--g1:#0ea5e9;--g2:#38bdf8">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+      </svg>
+    </div>
+    <span>Resume</span>
+  </a>
+
+  <a href="/cat" class="mpn-item" data-mpn="cat">
+    <div class="mpn-icon" style="--g1:#f43f5e;--g2:#fb923c">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
+        <path d="M8 3L6 7"/><path d="M16 3l2 4"/>
+        <circle cx="9" cy="12" r="1" fill="white"/>
+        <circle cx="15" cy="12" r="1" fill="white"/>
+      </svg>
+    </div>
+    <span>Cat</span>
+  </a>
+
+</nav>
+
+<!-- ══════════════════════════════════════════════════════
+     Mobile App Manager overlay  (triggered by long-press or gesture)
+════════════════════════════════════════════════════════ -->
 <div class="app-manager" id="app-manager" aria-hidden="true" role="dialog" aria-label="Recent apps">
   <div class="app-manager-inner">
     <div class="app-manager-header">
@@ -89,50 +84,36 @@
 
 <script>
 if (typeof window !== 'undefined') {
-  // ────────────────────────────────────────────────
-  // Shared z-index counter exposed to App.jsx
-  // ────────────────────────────────────────────────
-  (window as any)._lwZTop = 1000;
 
-  // ────────────────────────────────────────────────
-  // Desktop dock: highlight active page
-  // ────────────────────────────────────────────────
-  const path = window.location.pathname;
-  document.querySelectorAll<HTMLElement>('.dock-pin').forEach((pin) => {
-    const dock = pin.dataset.dock ?? '';
-    const href = pin.getAttribute('href') ?? '';
-    const active =
-      (path === '/' && dock === 'home') ||
-      (path !== '/' && path.startsWith(href) && href !== '/');
-    pin.classList.toggle('dock-pin--active', active);
-  });
-
-  // ────────────────────────────────────────────────
-  // Desktop taskbar: open windows
-  // ────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────
+  // Desktop taskbar: wait for React to mount .lw-container, then build
+  // ────────────────────────────────────────────────────────────────────────
   function buildTaskbar() {
     const bar = document.getElementById('taskbar-apps');
     if (!bar) return;
+
+    const wins = Array.from(document.querySelectorAll<HTMLElement>('.lw-container'));
+    if (wins.length === 0) return;
+
     bar.innerHTML = '';
-    document.querySelectorAll<HTMLElement>('.lw-container').forEach((win, i) => {
+    wins.forEach((win, i) => {
       const label = win.querySelector<HTMLElement>('.lw-title')?.textContent?.trim() || `App ${i + 1}`;
       const btn = document.createElement('button');
       btn.className = 'tb-btn';
       btn.textContent = label;
       (btn as any)._win = win;
       btn.addEventListener('click', () => {
-        const isMin    = win.classList.contains('lw-minimized');
-        const isClosed = win.classList.contains('lw-closed');
-        if (isClosed || isMin) {
-          // Fire React event to restore (removes lw-minimized via React handler)
+        const isMin = win.classList.contains('lw-minimized');
+        if (isMin) {
           win.dispatchEvent(new CustomEvent('lw:restore', { bubbles: false }));
         } else {
-          // Fire React event to minimize
           win.dispatchEvent(new CustomEvent('lw:minimize', { bubbles: false }));
         }
         refreshStates();
       });
       bar.appendChild(btn);
+      // Watch class changes for minimized/closed state
+      new MutationObserver(refreshStates).observe(win, { attributes: true, attributeFilter: ['class'] });
     });
     refreshStates();
   }
@@ -141,48 +122,63 @@ if (typeof window !== 'undefined') {
     document.querySelectorAll<HTMLElement>('.tb-btn').forEach((btn) => {
       const win: HTMLElement = (btn as any)._win;
       if (!win) return;
-      btn.classList.toggle('tb-active',    !win.classList.contains('lw-closed') && !win.classList.contains('lw-minimized'));
-      btn.classList.toggle('tb-minimized', !win.classList.contains('lw-closed') &&  win.classList.contains('lw-minimized'));
-      btn.classList.toggle('tb-closed',     win.classList.contains('lw-closed'));
+      const isClosed = !document.body.contains(win);
+      const isMin    = win.classList.contains('lw-minimized');
+      btn.classList.toggle('tb-active',    !isClosed && !isMin);
+      btn.classList.toggle('tb-minimized', !isClosed &&  isMin);
+      btn.classList.toggle('tb-closed',    isClosed);
     });
+    // Show placeholder when no visible windows
+    const bar = document.getElementById('taskbar-apps');
+    const ph  = bar?.querySelector<HTMLElement>('.dock-placeholder');
+    const anyVisible = Array.from(bar?.querySelectorAll<HTMLElement>('.tb-btn') ?? [])
+      .some(b => !b.classList.contains('tb-closed'));
+    if (ph) ph.style.display = anyVisible ? 'none' : 'inline';
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    buildTaskbar();
-    document.querySelectorAll<HTMLElement>('.lw-container').forEach((win) => {
-      new MutationObserver(refreshStates).observe(win, { attributes: true, attributeFilter: ['class'] });
+  // Use MutationObserver to wait for React to hydrate the window components
+  function waitForWindows() {
+    const existing = document.querySelectorAll('.lw-container');
+    if (existing.length > 0) { buildTaskbar(); return; }
+    const obs = new MutationObserver(() => {
+      if (document.querySelectorAll('.lw-container').length > 0) {
+        obs.disconnect();
+        buildTaskbar();
+      }
     });
+    obs.observe(document.getElementById('screen') ?? document.body, { childList: true, subtree: true });
+  }
+  waitForWindows();
+
+  // ────────────────────────────────────────────────────────────────────────
+  // Mobile page nav: highlight current page
+  // ────────────────────────────────────────────────────────────────────────
+  const path = window.location.pathname;
+  document.querySelectorAll<HTMLElement>('.mpn-item').forEach((item) => {
+    const mpn  = item.dataset.mpn ?? '';
+    const href = item.getAttribute('href') ?? '';
+    const active =
+      (path === '/' && mpn === 'home') ||
+      (path !== '/' && href !== '/' && path.startsWith(href));
+    item.classList.toggle('mpn-item--active', active);
   });
 
-  // ────────────────────────────────────────────────
-  // Android nav bar
-  // ────────────────────────────────────────────────
-  document.getElementById('nav-back')?.addEventListener('click', () => {
-    // If an app is maximized, un-maximize it instead of going back
-    const maxCard = document.querySelector<HTMLElement>('.mobile-card--maximized');
-    if (maxCard) {
-      maxCard.classList.remove('mobile-card--maximized');
-      document.body.classList.remove('mobile-maximized');
-    } else {
-      history.back();
-    }
-  });
-
-  // ────────────────────────────────────────────────
-  // App manager (mobile recents)
-  // ────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────────────────────────
+  // Mobile App Manager  (swipe up from bottom nav to open)
+  // ────────────────────────────────────────────────────────────────────────
   const appManager = document.getElementById('app-manager');
-  const recentsBtn = document.getElementById('nav-recents');
   const cardsEl    = document.getElementById('app-manager-cards');
 
   const APP_COLORS: Record<string, string> = {
-    'about':    'linear-gradient(135deg,#6366f1,#8b5cf6)',
-    'image':    'linear-gradient(135deg,#0ea5e9,#38bdf8)',
-    'contact':  'linear-gradient(135deg,#059669,#34d399)',
-    'projects': 'linear-gradient(135deg,#d97706,#f59e0b)',
-    'resume':   'linear-gradient(135deg,#0ea5e9,#38bdf8)',
-    'cat':      'linear-gradient(135deg,#f43f5e,#fb7185)',
-    'terminal': 'linear-gradient(135deg,#1e3a2f,#6ef2b6)',
+    'about':      'linear-gradient(135deg,#6366f1,#8b5cf6)',
+    'image':      'linear-gradient(135deg,#0ea5e9,#38bdf8)',
+    'contact':    'linear-gradient(135deg,#059669,#34d399)',
+    'projects':   'linear-gradient(135deg,#d97706,#f59e0b)',
+    'experiences':'linear-gradient(135deg,#10b981,#34d399)',
+    'skills':     'linear-gradient(135deg,#8b5cf6,#c084fc)',
+    'resume':     'linear-gradient(135deg,#0ea5e9,#38bdf8)',
+    'cat':        'linear-gradient(135deg,#f43f5e,#fb7185)',
+    'terminal':   'linear-gradient(135deg,#1e3a2f,#6ef2b6)',
   };
 
   function getAppColor(title: string): string {
@@ -196,18 +192,15 @@ if (typeof window !== 'undefined') {
   function buildAppManager() {
     if (!cardsEl) return;
     cardsEl.innerHTML = '';
-
     const cards = Array.from(document.querySelectorAll<HTMLElement>('.mobile-card'));
     if (cards.length === 0) {
       cardsEl.innerHTML = '<p class="app-manager-empty">No open apps</p>';
       return;
     }
-
     cards.forEach((card) => {
       const title  = card.dataset.appTitle || 'App';
       const cardEl = document.createElement('div');
       cardEl.className = 'app-mgr-card';
-      cardEl.setAttribute('data-target', card.id || '');
 
       const preview = document.createElement('div');
       preview.className = 'app-mgr-preview';
@@ -225,87 +218,71 @@ if (typeof window !== 'undefined') {
       lbl.className = 'app-mgr-label';
       lbl.textContent = title;
 
-      const opts = document.createElement('div');
-      opts.className = 'app-mgr-opts';
-
-      const infoBtn = document.createElement('button');
-      infoBtn.className = 'app-mgr-opt-btn';
-      infoBtn.title = 'App info';
-      infoBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
-
       const closeBtn = document.createElement('button');
       closeBtn.className = 'app-mgr-opt-btn app-mgr-opt-close';
-      closeBtn.title = 'Close app';
+      closeBtn.title = 'Close';
       closeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
       closeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         card.remove();
         cardEl.classList.add('app-mgr-card--removing');
-        setTimeout(() => {
-          cardEl.remove();
-          buildAppManager();
-        }, 280);
+        setTimeout(() => { cardEl.remove(); buildAppManager(); }, 280);
       });
-
-      opts.append(infoBtn, closeBtn);
-      bar.append(lbl, opts);
 
       // Swipe up to dismiss
       let startY = 0;
       preview.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
       preview.addEventListener('touchend', (e) => {
-        const dy = startY - e.changedTouches[0].clientY;
-        if (dy > 60) {
-          closeBtn.click();
-        }
+        if (startY - e.changedTouches[0].clientY > 50) closeBtn.click();
       });
 
       cardEl.addEventListener('click', () => {
         closeAppManager();
-        // Maximize the target app
         card.classList.add('mobile-card--maximized');
         document.body.classList.add('mobile-maximized');
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
 
+      bar.append(lbl, closeBtn);
       cardEl.append(preview, bar);
       cardsEl.appendChild(cardEl);
     });
   }
 
-  function openAppManager() {
+  function openAppManager()  {
     buildAppManager();
-    if (appManager) {
-      appManager.classList.add('is-open');
-      appManager.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('app-manager-open');
-    }
+    appManager?.classList.add('is-open');
+    appManager?.setAttribute('aria-hidden', 'false');
   }
-
   function closeAppManager() {
-    if (appManager) {
-      appManager.classList.remove('is-open');
-      appManager.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('app-manager-open');
-    }
+    appManager?.classList.remove('is-open');
+    appManager?.setAttribute('aria-hidden', 'true');
   }
 
-  recentsBtn?.addEventListener('click', () => {
-    if (appManager?.classList.contains('is-open')) {
-      closeAppManager();
-    } else {
-      openAppManager();
-    }
-  });
+  // Swipe up on the page-nav bar to open recents
+  const mobileNav = document.getElementById('mobile-page-nav');
+  if (mobileNav) {
+    let touchStartY = 0;
+    mobileNav.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; }, { passive: true });
+    mobileNav.addEventListener('touchend', (e) => {
+      if (touchStartY - e.changedTouches[0].clientY > 40) openAppManager();
+    });
+  }
 
   document.getElementById('app-manager-close-all')?.addEventListener('click', () => {
-    document.querySelectorAll<HTMLElement>('.mobile-card').forEach((c) => c.remove());
+    document.querySelectorAll<HTMLElement>('.mobile-card').forEach(c => c.remove());
     closeAppManager();
   });
-
-  // Close app manager when clicking outside
   appManager?.addEventListener('click', (e) => {
     if (e.target === appManager) closeAppManager();
+  });
+
+  // Android back button via mobile back gesture
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const maxCard = document.querySelector<HTMLElement>('.mobile-card--maximized');
+      if (maxCard) { maxCard.classList.remove('mobile-card--maximized'); document.body.classList.remove('mobile-maximized'); }
+      else if (appManager?.classList.contains('is-open')) closeAppManager();
+    }
   });
 }
 </script>

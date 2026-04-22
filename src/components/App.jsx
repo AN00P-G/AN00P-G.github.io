@@ -20,7 +20,7 @@ export default function WindowManager({
 
   useEffect(() => {
     setMounted(true);
-    const check = () => setIsMobile(window.innerWidth <= 768);
+    const check = () => setIsMobile(window.innerWidth <= 900);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
@@ -48,24 +48,22 @@ export default function WindowManager({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Desktop window — normal flow, draggable, resizable, constrained
+// Desktop window — draggable & resizable with correct event handling
 // ─────────────────────────────────────────────────────────────────────────────
 function DesktopWindow({ children, title, menuItems, monospace, noPad, height, width }) {
   const [closed,    setClosed]    = useState(false);
   const [maximized, setMaximized] = useState(false);
   const [pos,  setPos]  = useState({ x: 0, y: 0 });
-  const [size, setSize] = useState({ w: null, h: null }); // null → use CSS
-  const winRef   = useRef(null);
-  const interRef = useRef(null); // { type:'drag'|'resize', dir, startX,startY, ox,oy,ow,oh, rect, screenRect }
+  const [size, setSize] = useState({ w: null, h: null });
+  const winRef = useRef(null);
 
-  // ── Minimize via direct DOM class so taskbar JS can also toggle it ────────
+  // Minimize via direct DOM class so Footer taskbar JS can also toggle it
   const minimize = () => winRef.current?.classList.add("lw-minimized");
   const restore  = () => {
     winRef.current?.classList.remove("lw-minimized");
     setMaximized(false);
   };
 
-  // Expose on DOM element so Footer.astro taskbar can call them via events
   useEffect(() => {
     const el = winRef.current;
     if (!el) return;
@@ -79,80 +77,83 @@ function DesktopWindow({ children, title, menuItems, monospace, noPad, height, w
     };
   }, []);
 
-  // ── Shared pointer-move / up handler ─────────────────────────────────────
-  useEffect(() => {
-    if (!interRef.current) return;
+  // Reset translate when maximized
+  useEffect(() => { if (maximized) setPos({ x: 0, y: 0 }); }, [maximized]);
 
-    const onMove = (e) => {
-      const d = interRef.current;
-      if (!d) return;
-      const dx = e.clientX - d.startX;
-      const dy = e.clientY - d.startY;
+  // ── Drag ──────────────────────────────────────────────────────────────────
+  const startDrag = (e) => {
+    if (maximized || e.button !== 0) return;
+    if (e.target.closest(".lw-wm-buttons, .lw-resize")) return;
+    e.preventDefault();
 
-      if (d.type === "drag") {
-        let nx = d.ox + dx;
-        let ny = d.oy + dy;
-        // Constrain inside screen (keep at least 40px of title bar visible)
-        if (d.sr && d.rect) {
-          const minX = d.sr.left  - d.rect.right  + 60 + d.ox;
-          const maxX = d.sr.right - d.rect.left   - 60 + d.ox;
-          const minY = (d.sr.top + 32) - d.rect.top  + d.oy;
-          const maxY = d.sr.bottom     - d.rect.top - 40 + d.oy;
-          nx = Math.max(minX, Math.min(maxX, nx));
-          ny = Math.max(minY, Math.min(maxY, ny));
-        }
-        setPos({ x: nx, y: ny });
+    const winEl  = winRef.current;
+    if (!winEl) return;
+    const rect   = winEl.getBoundingClientRect();
+    const srEl   = document.getElementById("screen");
+    const sr     = srEl ? srEl.getBoundingClientRect() : null;
+    const startX = e.clientX, startY = e.clientY;
+    const ox = pos.x, oy = pos.y;
 
-      } else if (d.type === "resize") {
-        let nw = d.ow, nh = d.oh, nx = d.ox, ny = d.oy;
-        if (d.dir.includes("e"))  nw = Math.max(240, d.ow + dx);
-        if (d.dir.includes("s"))  nh = Math.max(120, d.oh + dy);
-        if (d.dir.includes("w")) { nw = Math.max(240, d.ow - dx); nx = d.ox + (d.ow - nw); }
-        if (d.dir.includes("n")) { nh = Math.max(120, d.oh - dy); ny = d.oy + (d.oh - nh); }
-        setSize({ w: nw, h: nh });
-        setPos ({ x: nx, y: ny  });
+    winEl.classList.add("lw-dragging");
+
+    const onMove = (ev) => {
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      let nx = ox + dx;
+      let ny = oy + dy;
+      if (sr && rect) {
+        nx = Math.max(sr.left  - rect.right  + 60 + ox, Math.min(sr.right  - rect.left  - 60 + ox, nx));
+        ny = Math.max(sr.top   + 32 - rect.top   + oy, Math.min(sr.bottom - rect.top   - 40 + oy, ny));
       }
+      setPos({ x: nx, y: ny });
     };
 
     const onUp = () => {
-      interRef.current = null;
-      // force re-render to clear cursor style
-      winRef.current?.classList.remove("lw-dragging", "lw-resizing");
+      winEl.classList.remove("lw-dragging");
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup",   onUp);
     };
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup",   onUp);
-    return () => {
+  };
+
+  // ── Resize ────────────────────────────────────────────────────────────────
+  const startResize = (dir) => (e) => {
+    if (maximized || e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const winEl  = winRef.current;
+    if (!winEl) return;
+    const rect   = winEl.getBoundingClientRect();
+    const startX = e.clientX, startY = e.clientY;
+    const ox = pos.x, oy = pos.y;
+    const ow = size.w ?? rect.width;
+    const oh = size.h ?? rect.height;
+
+    winEl.classList.add("lw-resizing");
+
+    const onMove = (ev) => {
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      let nw = ow, nh = oh, nx = ox, ny = oy;
+      if (dir.includes("e"))  nw = Math.max(240, ow + dx);
+      if (dir.includes("s"))  nh = Math.max(120, oh + dy);
+      if (dir.includes("w")) { nw = Math.max(240, ow - dx); nx = ox + (ow - nw); }
+      if (dir.includes("n")) { nh = Math.max(120, oh - dy); ny = oy + (oh - nh); }
+      setSize({ w: nw, h: nh });
+      setPos ({ x: nx, y: ny });
+    };
+
+    const onUp = () => {
+      winEl.classList.remove("lw-resizing");
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup",   onUp);
     };
-  });
 
-  // Reset offset when maximized
-  useEffect(() => { if (maximized) setPos({ x: 0, y: 0 }); }, [maximized]);
-
-  const startDrag = (e) => {
-    if (maximized || e.target.closest(".lw-wm-buttons, .lw-resize")) return;
-    const rect = winRef.current?.getBoundingClientRect();
-    const sr   = document.getElementById("screen")?.getBoundingClientRect();
-    interRef.current = { type: "drag", startX: e.clientX, startY: e.clientY,
-      ox: pos.x, oy: pos.y, rect, sr };
-    winRef.current?.classList.add("lw-dragging");
-    e.preventDefault();
-  };
-
-  const startResize = (dir) => (e) => {
-    if (maximized) return;
-    const rect = winRef.current?.getBoundingClientRect();
-    interRef.current = { type: "resize", dir,
-      startX: e.clientX, startY: e.clientY,
-      ox: pos.x, oy: pos.y,
-      ow: size.w ?? rect?.width  ?? 400,
-      oh: size.h ?? rect?.height ?? 300,
-    };
-    winRef.current?.classList.add("lw-resizing");
-    e.preventDefault();
-    e.stopPropagation();
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup",   onUp);
   };
 
   if (closed) return null;
@@ -172,7 +173,6 @@ function DesktopWindow({ children, title, menuItems, monospace, noPad, height, w
       className={`lw-container${maximized ? " lw-maximized" : ""}`}
       style={winStyle}
     >
-      {/* Title bar */}
       <div className="lw-titlebar" onMouseDown={startDrag}>
         <span className="lw-title">{title}</span>
         <div className="lw-wm-buttons">
@@ -183,7 +183,7 @@ function DesktopWindow({ children, title, menuItems, monospace, noPad, height, w
           <span className="lw-btn lw-max"
             title={maximized ? "Restore" : "Maximize"}
             onMouseDown={(e) => e.stopPropagation()}
-            onClick={() => { setMaximized((v) => !v); winRef.current?.classList.remove("lw-minimized"); }}
+            onClick={() => { setMaximized(v => !v); winRef.current?.classList.remove("lw-minimized"); }}
           >{maximized ? "⊡" : "□"}</span>
           <span className="lw-btn lw-close"
             title="Close"
@@ -192,19 +192,16 @@ function DesktopWindow({ children, title, menuItems, monospace, noPad, height, w
         </div>
       </div>
 
-      {/* Menu bar */}
       {menuItems.length > 0 && (
         <div className="lw-menubar">
           {menuItems.map((m, i) => <span key={i} className="lw-menu-item">{m}</span>)}
         </div>
       )}
 
-      {/* Body */}
       <div className={`lw-body${monospace ? " lw-mono" : ""}${noPad ? " lw-nopad" : ""}`}>
         {children}
       </div>
 
-      {/* Resize handles (8 directions) */}
       {!maximized && (
         <>
           <div className="lw-resize lw-resize-n"  onMouseDown={startResize("n")} />
@@ -222,15 +219,21 @@ function DesktopWindow({ children, title, menuItems, monospace, noPad, height, w
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MobileCard — Android-style full-width card
+// MobileCard — Android-style app card
 // ─────────────────────────────────────────────────────────────────────────────
 function MobileCard({ cardId, title, menuItems, monospace, noPad, children }) {
   const [maximized, setMaximized] = useState(false);
   const [closed,    setClosed]    = useState(false);
   const [showMenu,  setShowMenu]  = useState(false);
 
-  const maximize = () => { setMaximized(true);  document.body.classList.add("mobile-maximized"); };
-  const restore  = () => { setMaximized(false); document.body.classList.remove("mobile-maximized"); };
+  const maximize = () => {
+    setMaximized(true);
+    document.body.classList.add("mobile-maximized");
+  };
+  const restore = () => {
+    setMaximized(false);
+    document.body.classList.remove("mobile-maximized");
+  };
 
   if (closed) return null;
 
@@ -240,7 +243,10 @@ function MobileCard({ cardId, title, menuItems, monospace, noPad, children }) {
       className={`mobile-card lw-container${maximized ? " mobile-card--maximized" : ""}`}
       data-app-title={title}
     >
-      <div className="lw-titlebar mobile-titlebar" onClick={() => !maximized && maximize()}>
+      <div
+        className="lw-titlebar mobile-titlebar"
+        onClick={() => !maximized && maximize()}
+      >
         <span className="lw-title">{title}</span>
         <div className="lw-wm-buttons">
           {maximized && (
@@ -248,7 +254,7 @@ function MobileCard({ cardId, title, menuItems, monospace, noPad, children }) {
               onClick={(e) => { e.stopPropagation(); restore(); }}>⌄</span>
           )}
           <span className="lw-btn mobile-menu-dots" title="Options"
-            onClick={(e) => { e.stopPropagation(); setShowMenu((v) => !v); }}>⋮</span>
+            onClick={(e) => { e.stopPropagation(); setShowMenu(v => !v); }}>⋮</span>
           <span className="lw-btn lw-close" title="Close"
             onClick={(e) => { e.stopPropagation(); restore(); setClosed(true); }}>×</span>
         </div>

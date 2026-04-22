@@ -96,21 +96,19 @@ import App from "../components/App.astro";
 </BaseLayout>
 
 <script>
-  // Tab switching for the Contact app
-  document.querySelectorAll<HTMLElement>('.contact-tab').forEach((tab) => {
-    tab.addEventListener('click', () => {
-      const panelId = tab.dataset.panel!;
+  // Event delegation — works even after React hydration
+  document.body.addEventListener('click', (e) => {
+    const tab = (e.target as Element).closest<HTMLElement>('.contact-tab');
+    if (!tab) return;
 
-      // Update active tab
-      tab.closest('.contact-tabs')!.querySelectorAll('.contact-tab').forEach((t) =>
-        t.classList.remove('active')
-      );
-      tab.classList.add('active');
+    const panelId = tab.dataset.panel;
+    if (!panelId) return;
 
-      // Show matching panel, hide others
-      document.querySelectorAll<HTMLElement>('.contact-panel').forEach((p) => {
-        p.classList.toggle('contact-panel--hidden', p.id !== `panel-${panelId}`);
-      });
+    tab.closest('.contact-tabs')?.querySelectorAll('.contact-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    document.querySelectorAll<HTMLElement>('.contact-panel').forEach(p => {
+      p.classList.toggle('contact-panel--hidden', p.id !== `panel-${panelId}`);
     });
   });
 </script>

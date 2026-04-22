@@ -60,11 +60,13 @@ html { overscroll-behavior: none; }
   inset: 0;
   width: 100% !important;
   height: 100% !important;
-  z-index: 0;
+  z-index: 2;           /* above ::before gradient (z-1) so particles are visible */
   overflow: hidden;
   border-radius: inherit;
-  pointer-events: none; /* don't block screen interactions */
+  pointer-events: none;
 }
+/* Make the particle lib's internal background div transparent so screen gradient shows through */
+#particle-canvas > div { background: transparent !important; }
 
 /* ============================================================
    Outer device frame
@@ -145,7 +147,7 @@ main::before {
 .screen-watermark {
   position: absolute;
   inset: 0;
-  z-index: 2;          /* above ::before gradient, below content */
+  z-index: 3;          /* above gradient (z-1) & particles (z-2), below content (z-4) */
   pointer-events: none;
   background: url('/favicon.svg') center / 65% auto no-repeat;
   opacity: 0.04;
@@ -154,36 +156,33 @@ main::before {
 
 .screen-content {
   flex: 1 1 auto;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;     /* desktop: windows scroll internally via lw-body */
   position: relative;
-  z-index: 3;          /* above ::before overlay and watermark */
-  /* Centre all windows */
+  z-index: 4;           /* above particles (z-2) and watermark (z-3) */
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.75rem 0.75rem 4rem;  /* bottom pad clears dock */
+  padding: 0.6rem 0.75rem 4rem;
   gap: 0.6rem;
-  scrollbar-color: #2c3345 transparent;
-  scrollbar-width: thin;
+  /* allow children to fill available height */
+  min-height: 0;
 }
-.screen-content::-webkit-scrollbar       { width: 5px; }
-.screen-content::-webkit-scrollbar-track { background: transparent; }
-.screen-content::-webkit-scrollbar-thumb { background: #2c3345; border-radius: 6px; }
-
-/* Blur content when side-menu open (mobile) */
-body.menu-open .screen-content,
-body.menu-open .dock {
-  filter: blur(4px) brightness(0.7);
-  pointer-events: none;
+/* Full-height wrapper used by multi-app layouts */
+.screen-content > .projects-layout,
+.screen-content > .about-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
 }
 
-/* Blur content when activities overlay open */
+/* Blur content when activities overlay open (keep desktop effect) */
 body.activities-open .screen-content,
 body.activities-open .dock {
   filter: blur(6px) brightness(0.5);
   pointer-events: none;
 }
+
+/* (menu-overlay is toggled by the CSS checkbox, no JS class needed) */
 
 /* ============================================================
    Header  (Ubuntu GNOME top panel)
@@ -501,9 +500,9 @@ body.activities-open .dock {
 .menu-toggle { display: none; }
 
 .menu-overlay {
-  position: fixed;
+  position: absolute;   /* contained by #screen (which has transform) */
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.35);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
@@ -538,39 +537,34 @@ body.activities-open .dock {
   margin: 0;
 }
 
-/* 2×2 colorful app grid in drawer */
+/* 2×2 icon-only grid in drawer */
 .side-app-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
+  padding: 4px 0;
 }
 .side-app {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   text-decoration: none;
-  color: #c0c8e0;
-  border-radius: 14px;
-  padding: 12px 6px;
+  border-radius: 16px;
+  padding: 12px;
   background: rgba(255,255,255,0.04);
-  transition: background 0.15s, color 0.15s, transform 0.15s;
+  transition: background 0.15s, transform 0.15s;
+  aspect-ratio: 1;
 }
-.side-app:active { transform: scale(0.94); }
+.side-app:active { transform: scale(0.9); }
 .side-app svg {
-  width: 32px; height: 32px;
-  padding: 7px;
-  border-radius: 12px;
+  width: 36px; height: 36px;
+  padding: 8px;
+  border-radius: 13px;
   background: linear-gradient(145deg, var(--g1), var(--g2));
-  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.45);
   flex-shrink: 0;
 }
-.side-app span {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #c0c8e0;
-}
-.side-app:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.side-app:hover { background: rgba(255,255,255,0.09); }
 
 .mobile-nav-list {
   display: flex;
@@ -790,19 +784,22 @@ body.activities-open .dock {
    About page
    ============================================================ */
 .about-layout {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr auto;
   gap: 0.6rem;
   width: 100%;
   max-width: 1100px;
+  height: 100%;
+  min-height: 0;
 }
 .about-top {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 280px;
   gap: 0.6rem;
   width: 100%;
-  align-items: start;
+  min-height: 0;
 }
+.about-top > * { min-height: 0; }
 .about-left  { min-width: 0; }
 .about-right { width: 100%; }
 .about-contact { width: 100%; }
@@ -1206,12 +1203,19 @@ body.activities-open .dock {
 .dock-windows {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
-  max-width: 300px;
+  padding: 0 4px;
 }
 .dock-windows::-webkit-scrollbar { display: none; }
+.dock-placeholder {
+  font-size: 0.72rem;
+  color: #3a4460;
+  font-style: italic;
+  padding: 0 4px;
+  user-select: none;
+}
 
 .tb-btn {
   background: transparent;
@@ -1308,45 +1312,67 @@ body.activities-open .dock {
   .screen-content {
     overflow-y: auto;
     overflow-x: hidden;
-    /* bottom pad: 40px header + 44px android nav + 52px dock ≈ 100px extra */
-    padding: 0.4rem 0.3rem 100px;
+    padding: 0.4rem 0.5rem 70px;  /* 70px clears the 62px mobile-page-nav */
     align-items: stretch;
-    gap: 0.4rem;
+    gap: 0;
   }
 
   /* Hide desktop dock on mobile */
   .dock { display: none; }
 
-  /* ── Mobile App Cards ── */
+  /* ── Mobile App Cards (Android recents style) ── */
+
+  /* Enable scroll-snapping in the content area */
+  .screen-content {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 0.4rem;
+  }
+
   .mobile-card {
+    scroll-snap-align: start;
     position: relative !important;
-    width: calc(100% - 12px) !important;
-    margin: 6px auto !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
-    transition: transform 0.2s ease;
+    width: 100% !important;
+    min-height: calc(100dvh - 32px - 62px - 12px) !important;
+    max-height: calc(100dvh - 32px - 62px - 12px) !important;
+    margin: 0 0 8px 0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.5) !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
   }
   .mobile-card .lw-titlebar {
     cursor: pointer;
-    background: rgba(30,40,60,0.95);
-    border-radius: 12px 12px 0 0;
+    min-height: 40px;
+    background: rgba(22,30,50,0.98);
+    border-radius: 16px 16px 0 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  /* Tap hint on title bar */
+  .mobile-card:not(.mobile-card--maximized) .lw-titlebar::after {
+    content: 'Tap to expand';
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.25);
+    margin-left: 8px;
   }
 
-  /* Maximized mobile card */
+  /* Maximized mobile card: fills screen between header and nav */
   .mobile-card--maximized {
     position: fixed !important;
-    inset: 40px 0 100px !important;
+    inset: 32px 0 62px !important;
+    min-height: unset !important;
+    max-height: unset !important;
     width: 100% !important;
     margin: 0 !important;
     border-radius: 0 !important;
-    z-index: 99000 !important;
+    z-index: 99900 !important;
     transform: none !important;
   }
   .mobile-card--maximized .lw-titlebar {
     border-radius: 0;
     cursor: default;
-    background: rgba(20,28,45,0.98);
+    background: rgba(14,20,38,0.99);
   }
+  .mobile-card--maximized .lw-titlebar::after { display: none; }
 
   /* Context menu */
   .mobile-context-menu {
@@ -1388,55 +1414,51 @@ body.activities-open .dock {
   .about-right  { width: 100%; }
   .about-contact { width: 100%; }
 
-  /* ── Android 3-button nav ── */
-  .android-nav {
-    position: absolute;  /* inside #screen which has transform, acts like fixed */
-    bottom: 52px;
-    left: 0; right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
-    height: 44px;
-    background: var(--droid-nav);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255,255,255,0.05);
-    z-index: 99997;
-  }
-  .android-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px; height: 36px;
-    background: transparent;
-    border: none;
-    color: #b0bcd4;
-    cursor: pointer;
-    border-radius: 50%;
-    transition: background 0.15s, color 0.15s;
-    text-decoration: none;
-    font-size: 1.1rem;
-  }
-  .android-btn svg { width: 20px; height: 20px; }
-  .android-btn:hover,
-  .android-btn:active { background: rgba(255,255,255,0.1); color: #fff; }
-  .android-home svg { width: 16px; height: 16px; }
-
-  /* ── Android app dock (pinned apps) ── */
-  .dock-pinned-mobile,
-  .android-dock {
-    position: absolute;  /* inside #screen */
-    bottom: 0;
-    left: 0; right: 0;
+  /* ── Mobile page navigator (replaces android 3-button bar) ── */
+  .mobile-page-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 62px;
     display: flex;
     align-items: center;
     justify-content: space-around;
-    height: 52px;
-    background: rgba(10,15,30,0.92);
-    backdrop-filter: blur(14px);
+    background: rgba(10,14,28,0.96);
+    backdrop-filter: blur(18px);
     border-top: 1px solid rgba(255,255,255,0.07);
-    z-index: 99996;
-    padding: 0 8px;
+    z-index: 99997;
+    padding: 0 4px 4px;
+  }
+  .mpn-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+    color: #7a87a8;
+    flex: 1;
+    padding: 4px 0;
+    transition: color 0.15s;
+  }
+  .mpn-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(145deg, var(--g1), var(--g2));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+    opacity: 0.55;
+  }
+  .mpn-icon svg { width: 16px; height: 16px; }
+  .mpn-item span { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.03em; }
+  .mpn-item--active .mpn-icon { opacity: 1; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
+  .mpn-item--active { color: #e0e8ff; }
+  .mpn-item:active .mpn-icon { transform: scale(0.9); }
+
+  /* ── Android app dock (legacy, keep for compatibility) ── */
+  .dock-pinned-mobile,
+  .android-dock,
+  .android-nav {
+    display: none;
   }
 
   /* ── App manager overlay ── */
@@ -1608,20 +1630,10 @@ body.activities-open .dock {
   }
   .dock-pin--active::after { display: none; }
 
-  .android-nav {
-    display: flex;
-  }
 }
 
-/* Hide android nav on desktop */
-@media (min-width: 769px) {
-  .android-nav,
+/* Mobile page nav + app manager only on mobile */
+@media (min-width: 901px) {
+  .mobile-page-nav,
   .app-manager { display: none !important; }
-
-  .mobile-card--maximized {
-    position: fixed !important;
-    inset: 32px 0 52px !important;
-    border-radius: 0 !important;
-    z-index: 99998 !important;
-  }
 }

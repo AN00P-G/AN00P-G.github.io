@@ -24,31 +24,33 @@ import App from "../components/App.astro";
 <!-- styles in /public/style/style.css -->
 
 <script>
-	document.getElementById('noBtn')?.addEventListener('click', () => {
-		window.location.href = '/about';
-	});
+  // Use event delegation on document.body so buttons work even after React hydration
+  document.body.addEventListener('click', (e) => {
+    const target = e.target as Element;
 
-	document.getElementById('continueBtn')?.addEventListener('click', () => {
-		const intro = document.getElementById('catIntro') as HTMLElement;
-		const videoDiv = document.getElementById('catVideo') as HTMLElement;
+    if (target.closest('#noBtn')) {
+      window.location.href = '/about';
+      return;
+    }
 
-		// Build iframe only now so autoplay triggers at the right moment
-		const iframe = document.createElement('iframe');
-		iframe.style.width = '100%';
-		iframe.style.height = '100%';
-		iframe.style.border = 'none';
-		iframe.style.display = 'block';
-		iframe.src = 'https://www.youtube.com/embed/IxX_QHay02M?autoplay=1&mute=0&loop=1&playlist=IxX_QHay02M&controls=0&modestbranding=1&rel=0&disablekb=1';
-		iframe.title = 'YouTube video player';
-		iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-		iframe.allowFullscreen = true;
+    if (target.closest('#continueBtn')) {
+      const intro    = document.getElementById('catIntro') as HTMLElement | null;
+      const videoDiv = document.getElementById('catVideo')  as HTMLElement | null;
+      if (!intro || !videoDiv) return;
 
-		videoDiv.appendChild(iframe);
+      const iframe = document.createElement('iframe');
+      iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+      iframe.src   = 'https://www.youtube.com/embed/IxX_QHay02M?autoplay=1&mute=0&loop=1&playlist=IxX_QHay02M&controls=0&modestbranding=1&rel=0&disablekb=1';
+      iframe.title = 'YouTube video player';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      (iframe as any).allowFullscreen = true;
 
-		intro.style.display = 'none';
-		videoDiv.style.opacity = '1';
-		videoDiv.style.pointerEvents = 'auto';
-	});
+      videoDiv.appendChild(iframe);
+      intro.style.display       = 'none';
+      videoDiv.style.opacity    = '1';
+      videoDiv.style.pointerEvents = 'auto';
+    }
+  });
 </script>
 
 
