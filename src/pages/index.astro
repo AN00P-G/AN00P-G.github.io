@@ -23,7 +23,7 @@ import Terminal from "../components/Terminal.astro";
     const prompt = 'anoop@portfolio:~$';
     const logEl = document.querySelector('#live-log');
     const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
+ 
     const append = (type, line, opts = {}) => {
       if (!logEl) return;
       const el = document.createElement('div');
