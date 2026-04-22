@@ -5,8 +5,88 @@ import App from "../components/App.astro";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-	<!-- astro slot -->
-	<App title="Resume" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="900px">
-	<p>Welcome to the Resume page!</p>
-	</App>
+  <App title="Resume — Anupraj Guragain" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="min(900px, 100%)">
+
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem;">
+      <div>
+        <h1 style="margin:0; font-size:1.5rem; color:#e8eaf0;">Anupraj Guragain</h1>
+        <p style="margin:0.25rem 0 0; font-size:0.85rem; color:#7d8ba8; font-family:'SF Mono',monospace;">
+          guragain.me · github.com/AN00P-G
+        </p>
+      </div>
+      <a
+        href="https://github.com/AN00P-G"
+        target="_blank"
+        rel="noopener"
+        style="font-size:0.8rem; color:#6ef2b6; text-decoration:none; border:1px solid #6ef2b6; border-radius:6px; padding:5px 14px;"
+      >
+        View GitHub ↗
+      </a>
+    </div>
+
+    <div class="resume-section">
+      <h2>Education</h2>
+      <div class="resume-item">
+        <div class="resume-item-head">
+          <strong>Allegheny College</strong>
+          <span>Aug 2023 – May 2027</span>
+        </div>
+        <p>B.S. Computer Science · Meadville, PA · GPA: In Progress</p>
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <h2>Experience</h2>
+      <div class="resume-item">
+        <div class="resume-item-head">
+          <strong>Teaching Assistant — Computer Science</strong>
+          <span>2024 – Present</span>
+        </div>
+        <p>Allegheny College · Assist in intro-level CS labs, hold office hours, review student code, and explain core programming concepts.</p>
+      </div>
+      <div class="resume-item">
+        <div class="resume-item-head">
+          <strong>Independent Security Research</strong>
+          <span>Ongoing</span>
+        </div>
+        <p>Self-directed study in penetration testing and CTF competitions; documented findings as write-ups on GitHub.</p>
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <h2>Projects</h2>
+      <div class="resume-item">
+        <div class="resume-item-head">
+          <strong>Portfolio Website</strong>
+          <span>2024</span>
+        </div>
+        <p>Built a desktop OS–inspired portfolio using Astro 5, React, and a custom draggable window-manager component.</p>
+      </div>
+      <div class="resume-item">
+        <div class="resume-item-head">
+          <strong>ML Interpretability Experiments</strong>
+          <span>2024</span>
+        </div>
+        <p>Trained classifiers in PyTorch and scikit-learn; used SHAP and saliency maps to explore feature importance.</p>
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <h2>Skills</h2>
+      <div class="skills-grid">
+        <span class="skill-chip">Python</span>
+        <span class="skill-chip">JavaScript / TypeScript</span>
+        <span class="skill-chip">React</span>
+        <span class="skill-chip">Astro</span>
+        <span class="skill-chip">C</span>
+        <span class="skill-chip">Bash</span>
+        <span class="skill-chip">Linux</span>
+        <span class="skill-chip">Git</span>
+        <span class="skill-chip">Docker</span>
+        <span class="skill-chip">PyTorch</span>
+        <span class="skill-chip">Ethical Hacking</span>
+      </div>
+    </div>
+
+  </App>
 </BaseLayout>

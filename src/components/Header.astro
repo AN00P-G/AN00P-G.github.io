@@ -1,104 +1,260 @@
 ---
+import Nav from './Nav.astro';
 ---
-<header class="screen-header">
-	<!-- Left: Activities / App menu -->
-	<div class="header-left">
-		<div class="header-menu">
-		<input type="checkbox" id="menu-toggle" class="menu-toggle" />
-		<label for="menu-toggle" class="menu-button" aria-label="Toggle menu">ᯤ Menu</label>
-		<div class="menu-overlay" id="menu-overlay" aria-hidden="true"></div>
-		<aside class="side-menu">
-			<div class="wifi-stack" id="wifi-stack">
-				<img src="/icons/about.svg"   class="arc-icon about-icon"   alt="About" />
-				<img src="/icons/project.svg" class="arc-icon project-icon" alt="Projects" />
-				<img src="/icons/resume.svg"  class="arc-icon resume-icon"  alt="Resume" />
-				<img src="/icons/cat.svg"     class="arc-icon cat-icon"     alt="Cat" />
-			</div>
-			<span class="menu-spacer"></span>
-		</aside>
-		</div>
-	</div>
-	<!-- Center: clock + date -->
-	<div class="header-status">
-		<span class="header-clock">--:--</span>
-		<span class="header-sep">·</span>
-		<span class="header-date">---</span>
-	</div>
 
-	<!-- Right: system tray -->
-	<div class="header-right" aria-label="Status indicators">
-		<span class="tray-item" title="Bluetooth">ᛒ</span>
-		<span class="tray-item" title="Sound">🔊</span>
-		<span class="tray-item" title="Brightness">🔅</span>
-		<span class="tray-item" title="Battery">🔋<span class="battery-pct">98%</span></span>
-	</div>
+<!-- ══════════════════════════════════════════════════════
+     Activities overlay  (Ubuntu app switcher)
+════════════════════════════════════════════════════════ -->
+<div class="activities-overlay" id="activities-overlay" aria-hidden="true">
+  <div class="activities-backdrop" id="activities-backdrop"></div>
+  <div class="activities-panel">
+
+    <input type="text" class="activities-search"
+      placeholder="🔍  Search apps…" aria-label="Search applications" autocomplete="off" />
+
+    <div class="activities-grid">
+
+      <a href="/about" class="act-app" data-label="About">
+        <div class="act-icon" style="--g1:#6366f1;--g2:#a78bfa">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+            <circle cx="12" cy="8" r="4"/><path d="M20 20c0-4.4-3.6-8-8-8s-8 3.6-8 8"/>
+          </svg>
+          <div class="act-icon-shine"></div>
+        </div>
+        <span>About</span>
+      </a>
+
+      <a href="/projects" class="act-app" data-label="Projects">
+        <div class="act-icon" style="--g1:#10b981;--g2:#34d399">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+          </svg>
+          <div class="act-icon-shine"></div>
+        </div>
+        <span>Projects</span>
+      </a>
+
+      <a href="/resume" class="act-app" data-label="Resume">
+        <div class="act-icon" style="--g1:#0ea5e9;--g2:#38bdf8">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <div class="act-icon-shine"></div>
+        </div>
+        <span>Resume</span>
+      </a>
+
+      <a href="/cat" class="act-app" data-label="Cat">
+        <div class="act-icon" style="--g1:#f43f5e;--g2:#fb923c">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
+            <path d="M8 3L6 7"/><path d="M16 3l2 4"/>
+            <circle cx="9"  cy="12" r="1" fill="white"/>
+            <circle cx="15" cy="12" r="1" fill="white"/>
+            <path d="M9 16s1.5 2 3 2 3-2 3-2"/>
+          </svg>
+          <div class="act-icon-shine"></div>
+        </div>
+        <span>Cat</span>
+      </a>
+
+      <a href="/" class="act-app" data-label="Terminal">
+        <div class="act-icon" style="--g1:#e95420;--g2:#f97316">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <polyline points="6 9 10 12 6 15"/>
+            <line x1="12" y1="15" x2="18" y2="15"/>
+          </svg>
+          <div class="act-icon-shine"></div>
+        </div>
+        <span>Terminal</span>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     Top panel (Ubuntu GNOME style)
+════════════════════════════════════════════════════════ -->
+<header class="screen-header">
+  <div class="header-left">
+    <!-- Ubuntu Activities button -->
+    <button class="activities-btn" id="activities-toggle"
+      aria-label="Open Activities" aria-expanded="false">
+      <span class="ub-logo" aria-hidden="true">
+        <span class="ub-dot ub-dot-top"></span>
+        <span class="ub-dot ub-dot-bl"></span>
+        <span class="ub-dot ub-dot-br"></span>
+        <span class="ub-ring"></span>
+      </span>
+      <span class="activities-label">Activities</span>
+    </button>
+
+    <!-- Desktop nav links (always visible, required for Playwright) -->
+    <Nav />
+
+    <!-- Mobile hamburger -->
+    <label for="menu-toggle" class="mobile-menu-label" aria-label="Open navigation">
+      <svg viewBox="0 0 22 16" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" aria-hidden="true">
+        <line x1="0" y1="1"  x2="22" y2="1"/>
+        <line x1="3" y1="8"  x2="19" y2="8"/>
+        <line x1="0" y1="15" x2="22" y2="15"/>
+      </svg>
+    </label>
+  </div>
+
+  <!-- Center clock -->
+  <div class="header-status">
+    <span class="header-date">---</span>
+    <span class="header-sep">·</span>
+    <span class="header-clock">--:--</span>
+  </div>
+
+  <!-- Right tray -->
+  <div class="header-right">
+    <span class="tray-item tray-wifi" title="Connected">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <circle cx="12" cy="20" r="1" fill="currentColor"/>
+      </svg>
+    </span>
+    <span class="tray-item" title="Volume">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      </svg>
+    </span>
+    <span class="tray-item tray-battery" title="Battery">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="7" width="18" height="11" rx="2"/>
+        <path d="M22 11v3"/>
+        <rect x="4" y="9" width="11" height="7" rx="1" fill="#6ef2b6" opacity=".7"/>
+      </svg>
+      <span class="battery-pct">98%</span>
+    </span>
+  </div>
 </header>
 
-<!-- styles in /public/style/style.css -->
+<!-- ══════════════════════════════════════════════════════
+     Mobile side drawer  (colorful app grid)
+════════════════════════════════════════════════════════ -->
+<input type="checkbox" id="menu-toggle" class="menu-toggle sr-only" />
+<div class="menu-overlay" id="menu-overlay"></div>
+<aside class="side-menu" id="side-menu" aria-label="Mobile navigation">
+  <p class="side-menu-title">Apps</p>
+  <div class="side-app-grid">
+    <a href="/about"    class="side-app" style="--g1:#6366f1;--g2:#a78bfa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <circle cx="12" cy="8" r="4"/><path d="M20 20c0-4.4-3.6-8-8-8s-8 3.6-8 8"/>
+      </svg>
+      <span>About</span>
+    </a>
+    <a href="/projects" class="side-app" style="--g1:#10b981;--g2:#34d399">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+      </svg>
+      <span>Projects</span>
+    </a>
+    <a href="/resume"   class="side-app" style="--g1:#0ea5e9;--g2:#38bdf8">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      <span>Resume</span>
+    </a>
+    <a href="/cat"      class="side-app" style="--g1:#f43f5e;--g2:#fb923c">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
+        <path d="M8 3L6 7"/><path d="M16 3l2 4"/>
+        <circle cx="9" cy="12" r="1" fill="white"/><circle cx="15" cy="12" r="1" fill="white"/>
+      </svg>
+      <span>Cat</span>
+    </a>
+  </div>
+  <!-- Accessible text links (required for Playwright) -->
+  <nav class="mobile-nav-list" aria-label="Site navigation">
+    <a href="/about"    class="mobile-nav-link">About</a>
+    <a href="/projects" class="mobile-nav-link">Projects</a>
+    <a href="/resume"   class="mobile-nav-link">Resume</a>
+    <a href="/cat"      class="mobile-nav-link">Cat</a>
+  </nav>
+</aside>
 
 <script>
-	if (typeof window !== 'undefined') {
-		const clockEl = document.querySelector('.header-clock');
-		const dateEl = document.querySelector('.header-date');
-		const fmtTime = new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit' });
-		const fmtDay = new Intl.DateTimeFormat([], { weekday: 'short' });
-		const update = () => {
-			const now = new Date();
-			if (clockEl) clockEl.textContent = fmtTime.format(now);
-			if (dateEl) dateEl.textContent = fmtDay.format(now);
-		};
-		update();
-		setInterval(update, 60000);
+if (typeof window !== 'undefined') {
+  // ── Clock ──────────────────────────────────────────────────────────────
+  const clockEl = document.querySelector<HTMLElement>('.header-clock');
+  const dateEl  = document.querySelector<HTMLElement>('.header-date');
+  const battPct = document.querySelector<HTMLElement>('.battery-pct');
+  const fmtTime = new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit' });
+  const fmtDay  = new Intl.DateTimeFormat([], { weekday: 'short', month: 'short', day: 'numeric' });
+  const tick = () => {
+    const now = new Date();
+    if (clockEl) clockEl.textContent = fmtTime.format(now);
+    if (dateEl)  dateEl.textContent  = fmtDay.format(now);
+  };
+  tick();
+  setInterval(tick, 30_000);
+  if (battPct) battPct.textContent = `${Math.floor(Math.random() * 30) + 70}%`;
 
-		const overlay = document.getElementById('menu-overlay');
-		if (overlay) overlay.addEventListener('click', () => { if (toggle) { toggle.checked = false; toggle.dispatchEvent(new Event('change')); } });
-		const toggle = document.getElementById('menu-toggle');
-		const body = document.body;
-		if (toggle && body) {
-			const syncMenuState = () => {
-				body.classList.toggle('menu-open', toggle.checked);
-			};
-			toggle.addEventListener('change', syncMenuState);
-			syncMenuState();
-		}
+  // ── Activities overlay ─────────────────────────────────────────────────
+  const actBtn     = document.getElementById('activities-toggle');
+  const actOverlay = document.getElementById('activities-overlay');
+  const actBackdrop= document.getElementById('activities-backdrop');
 
-		// WiFi stack: y-based hover highlight + click routing
-		// Arcs in 2000x2000 canvas: about y13%, project y33%, resume y53%, cat y71%
-		const wifiStack = document.getElementById('wifi-stack');
-		if (wifiStack) {
-			const arcMap = [
-				{ cls: 'about-icon',   href: '/about',    max: 0.28 },
-				{ cls: 'project-icon', href: '/projects', max: 0.48 },
-				{ cls: 'resume-icon',  href: '/resume',   max: 0.68 },
-				{ cls: 'cat-icon',     href: '/cat',      max: 1.00 },
-			];
+  const openActivities = (open: boolean) => {
+    if (!actOverlay || !actBtn) return;
+    actOverlay.classList.toggle('is-open', open);
+    actOverlay.setAttribute('aria-hidden', String(!open));
+    actBtn.setAttribute('aria-expanded', String(open));
+    actBtn.classList.toggle('is-open', open);
+    document.body.classList.toggle('activities-open', open);
+  };
+  actBtn?.addEventListener('click', () => openActivities(!actOverlay?.classList.contains('is-open')));
+  actBackdrop?.addEventListener('click', () => openActivities(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') openActivities(false); });
 
-			const getArc = (e) => {
-				const rect = wifiStack.getBoundingClientRect();
-				const yPct = (e.clientY - rect.top) / rect.height;
-				return arcMap.find(a => yPct <= a.max);
-			};
+  // Stagger-animate app icons when overlay opens
+  actOverlay?.addEventListener('transitionend', () => {
+    if (actOverlay.classList.contains('is-open')) {
+      document.querySelectorAll<HTMLElement>('.act-app').forEach((el, i) => {
+        el.style.animationDelay = `${i * 55}ms`;
+        el.classList.add('act-app--enter');
+      });
+    } else {
+      document.querySelectorAll<HTMLElement>('.act-app').forEach(el => {
+        el.classList.remove('act-app--enter');
+      });
+    }
+  });
 
-			wifiStack.style.cursor = 'pointer';
+  // Highlight current page
+  document.querySelectorAll<HTMLElement>('.act-app').forEach(el => {
+    if (window.location.pathname.includes(el.dataset.label?.toLowerCase() ?? '___')) {
+      el.classList.add('act-app--active');
+    }
+  });
 
-			wifiStack.addEventListener('mousemove', (e) => {
-				const hovered = getArc(e);
-				arcMap.forEach(({ cls }) => {
-					const img = wifiStack.querySelector('.' + cls);
-					if (img) img.classList.toggle('arc-hover', hovered?.cls === cls);
-				});
-			});
+  // ── Top-bar nav highlight ──────────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('.nav-link').forEach(link => {
+    const href = link.getAttribute('href') ?? '';
+    if (href !== '/' && window.location.pathname.startsWith(href)) {
+      link.classList.add('nav-link--active');
+    }
+  });
 
-			wifiStack.addEventListener('mouseleave', () => {
-				arcMap.forEach(({ cls }) => {
-					wifiStack.querySelector('.' + cls)?.classList.remove('arc-hover');
-				});
-			});
-
-			wifiStack.addEventListener('click', (e) => {
-				const arc = getArc(e);
-				if (arc) window.location.href = arc.href;
-			});
-		}
-	}
+  // ── Mobile side drawer ─────────────────────────────────────────────────
+  const toggle  = document.getElementById('menu-toggle') as HTMLInputElement | null;
+  const overlay = document.getElementById('menu-overlay');
+  overlay?.addEventListener('click', () => { if (toggle) toggle.checked = false; });
+  toggle?.addEventListener('change', () => {
+    document.body.classList.toggle('menu-open', toggle.checked);
+  });
+}
 </script>

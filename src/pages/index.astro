@@ -4,7 +4,7 @@ const pageTitle = "Home";
 import Terminal from "../components/Terminal.astro";
 ---
 
-<BaseLayout>
+<BaseLayout pageTitle={pageTitle}>
 
   <Terminal>
     <pre class="ascii-art" aria-label="ASCII art banner"> 
@@ -21,10 +21,20 @@ import Terminal from "../components/Terminal.astro";
 
   <script>
     const prompt = 'anoop@portfolio:~$';
-    const logEl = document.querySelector('#live-log');
     const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
- 
-    const append = (type, line, opts = {}) => {
+
+    // React hydrates asynchronously — wait for #live-log to appear in the DOM
+    const waitForEl = (sel) => new Promise((resolve) => {
+      const el = document.querySelector(sel);
+      if (el) return resolve(el);
+      const obs = new MutationObserver(() => {
+        const found = document.querySelector(sel);
+        if (found) { obs.disconnect(); resolve(found); }
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    });
+
+    const append = (logEl, type, line, opts = {}) => {
       if (!logEl) return;
       const el = document.createElement('div');
       el.className = `log-line ${type}`;
@@ -42,54 +52,49 @@ import Terminal from "../components/Terminal.astro";
       } else {
         el.textContent = line;
       }
- 
+
       logEl.appendChild(el);
       logEl.scrollTop = logEl.scrollHeight;
     };
 
     const formatMs = (ms) => `${Math.max(ms, 0).toFixed(0)}ms`;
 
-    const run = async () => {
+    const run = async (logEl) => {
       const target = window.location.origin;
       await pause(500);
-      append('cmd', `echo Welcome to my portfolio!`, { promptText: prompt });
-      append('info', '> Welcome to my portfolio! Feel free to look around and check out my projects....');
+      append(logEl, 'cmd', `echo Welcome to my portfolio!`, { promptText: prompt });
+      append(logEl, 'info', '> Welcome to my portfolio! Feel free to look around and check out my projects....');
       await pause(1000);
-      append('cmd', `curl -I ${target}`, { promptText: prompt });
-      append('info', `> Resolving ${window.location.hostname}...`);
+      append(logEl, 'cmd', `curl -I ${target}`, { promptText: prompt });
+      append(logEl, 'info', `> Resolving ${window.location.hostname}...`);
       await pause(500);
-      append('step', '> Connecting...');
+      append(logEl, 'step', '> Connecting...');
       await pause(500);
-      append('step', '> TLS handshake complete');
+      append(logEl, 'step', '> TLS handshake complete');
       await pause(500);
-      append('step', '> Sending request');
+      append(logEl, 'step', '> Sending request');
 
       const start = performance.now();
       try {
         const res = await fetch(target, { cache: 'no-store' });
         const text = await res.text();
         const dur = performance.now() - start;
-        append('info', `> HTTP ${res.status} ${res.statusText || ''}`.trim());
-        append('info', `> Downloaded ${text.length} bytes in ${formatMs(dur)}`);
-        append('step', '> Rendering page...');
+        append(logEl, 'info', `> HTTP ${res.status} ${res.statusText || ''}`.trim());
+        append(logEl, 'info', `> Downloaded ${text.length} bytes in ${formatMs(dur)}`);
+        append(logEl, 'step', '> Rendering page...');
         await pause(500);
-        append('ok', '✔ Done');
-        append('info', '> Redirecting to about page in 5 sec...');
-        await pause(1000);
-        append('info', '> Redirecting to about page in 4 sec...');
-        await pause(1000);
-        append('info', '> Redirecting to about page in 3 sec...');
-        await pause(1000);
-        append('info', '> Redirecting to about page in 2 sec...');
-        await pause(1000);
-        append('info', '> Redirecting to about page in 1 sec...');
-        await pause(1000);
+        append(logEl, 'ok', '✔ Done');
+        for (let i = 5; i >= 1; i--) {
+          append(logEl, 'info', `> Redirecting to about page in ${i} sec...`);
+          await pause(1000);
+        }
         window.location.href = '/about';
       } catch (err) {
-        append('error', `! Request failed: ${err?.message || err}`);
+        append(logEl, 'error', `! Request failed: ${err?.message || err}`);
       }
     };
 
-    run();
+    // Wait for React to hydrate the terminal window, then run
+    waitForEl('#live-log').then(logEl => run(logEl));
   </script>
 </BaseLayout>

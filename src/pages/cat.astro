@@ -8,12 +8,11 @@ import App from "../components/App.astro";
 	<!-- astro slot -->
 	<App title="!!MEOW!!" menuItems={["File", "Edit", "View", "Help"]} height="600px" width="900px">
 		<div class="cat-intro" id="catIntro">
-			<h1 style="font-size: 3rem; text-align: center; margin: 5rem; color: #f00303;">Extreme Seizure Warning...</h1>
-			<div style="text-align: center;">
-				<button id="continueBtn">Continue</button>
-			</div>
-			<div style="text-align: center;">
-				<button id="noBtn">NO</button>
+			<h1 style="font-size: 2.4rem; text-align: center; color: #ff5f57; margin: 0;">⚠ Extreme Seizure Warning</h1>
+			<p style="color:#9aa5c0; text-align:center; margin: 0.5rem 0 1.5rem; font-size:0.9rem;">This page contains rapidly flashing content. Continue only if you are comfortable.</p>
+			<div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+				<button id="continueBtn">Yes, continue →</button>
+				<button id="noBtn">No thanks</button>
 			</div>
 		</div>
 		<div class="cat-video" id="catVideo" style="opacity:0; pointer-events:none; transition: opacity 0.4s ease; height:100%; width:100%; overflow:hidden;">
@@ -25,6 +24,10 @@ import App from "../components/App.astro";
 <!-- styles in /public/style/style.css -->
 
 <script>
+	document.getElementById('noBtn')?.addEventListener('click', () => {
+		window.location.href = '/about';
+	});
+
 	document.getElementById('continueBtn')?.addEventListener('click', () => {
 		const intro = document.getElementById('catIntro') as HTMLElement;
 		const videoDiv = document.getElementById('catVideo') as HTMLElement;

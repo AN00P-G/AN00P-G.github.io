@@ -1,25 +1,87 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
-const pageTitle = "projects";
+const pageTitle = "Projects";
 import App from "../components/App.astro";
 ---
 
-
 <BaseLayout pageTitle={pageTitle}>
-	<!-- astro slot -->
-	<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-		<App title="Projects" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="700px">
-			<h1>Projects</h1>
-		</App>
-	</div>
-	<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-		<App title="Experiences" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="700px">
-			<h1>Experiences</h1>
-		</App>
-	</div>
-	<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-		<App title="Skills" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="700px">
-			<h1>Skills</h1>
-		</App>
-	</div>
+
+  <div style="display:flex; flex-direction:column; gap:0.6rem; width:100%; max-width:900px;">
+
+    <App title="Projects" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="100%">
+      <h1>Projects</h1>
+      <div class="projects-grid">
+        <div class="project-card">
+          <h3>Portfolio Site</h3>
+          <p>This very website — a desktop OS–inspired personal portfolio built with Astro, React, and a custom window manager component.</p>
+          <span class="project-tag">Astro</span>
+          <span class="project-tag">React</span>
+          <span class="project-tag">CSS</span>
+        </div>
+        <div class="project-card">
+          <h3>ML Classifier</h3>
+          <p>Trained a neural-network classifier on tabular datasets; explored feature importance and model interpretability techniques.</p>
+          <span class="project-tag">Python</span>
+          <span class="project-tag">PyTorch</span>
+          <span class="project-tag">scikit-learn</span>
+        </div>
+        <div class="project-card">
+          <h3>CTF Write-ups</h3>
+          <p>Collection of solutions and notes from various Capture-the-Flag competitions — covering web, binary exploitation, and crypto.</p>
+          <span class="project-tag">Security</span>
+          <span class="project-tag">Python</span>
+          <span class="project-tag">Bash</span>
+        </div>
+        <div class="project-card">
+          <h3>Automation Scripts</h3>
+          <p>A library of shell and Python scripts for automating repetitive dev-ops tasks — log parsing, backup, and deployment helpers.</p>
+          <span class="project-tag">Bash</span>
+          <span class="project-tag">Python</span>
+        </div>
+      </div>
+    </App>
+
+    <App title="Experiences" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="100%">
+      <h1>Experiences</h1>
+      <ul class="timeline">
+        <li>
+          <strong>Allegheny College — Computer Science</strong>
+          Aug 2023 – Present · Meadville, PA<br/>
+          Studying CS with a focus on machine learning, systems programming, and ethical hacking.
+        </li>
+        <li>
+          <strong>Teaching Assistant</strong>
+          2024 – Present · Allegheny College<br/>
+          Assist professors with intro CS labs; hold office hours and help students debug code.
+        </li>
+        <li>
+          <strong>Independent Projects</strong>
+          Ongoing<br/>
+          Self-directed research in ML interpretability and offensive security.
+        </li>
+      </ul>
+    </App>
+
+    <App title="Skills" menuItems={["File", "Edit", "View", "Help"]} height="auto" width="100%">
+      <h1>Skills</h1>
+      <div class="skills-grid">
+        <span class="skill-chip">Python</span>
+        <span class="skill-chip">JavaScript / TypeScript</span>
+        <span class="skill-chip">React</span>
+        <span class="skill-chip">Astro</span>
+        <span class="skill-chip">HTML / CSS</span>
+        <span class="skill-chip">Bash / Shell</span>
+        <span class="skill-chip">C</span>
+        <span class="skill-chip">Git</span>
+        <span class="skill-chip">Linux</span>
+        <span class="skill-chip">PyTorch</span>
+        <span class="skill-chip">scikit-learn</span>
+        <span class="skill-chip">Docker</span>
+        <span class="skill-chip">Ethical Hacking</span>
+        <span class="skill-chip">CTF / Pentesting</span>
+      </div>
+    </App>
+
+  </div>
+
 </BaseLayout>
