@@ -23,16 +23,21 @@ test('has h1', async ({page}) => {
 
 test('has nav', async ({page}) => {
   await page.goto(process.env.BASE_URL);
-  const nav = page.locator('nav');
+  const nav = page
+    .locator('header')
+    .getByRole('navigation', { name: 'Site navigation' });
   await expect(nav).not.toBeEmpty();
 });
 
 test('has and follows links', async ({page}) => {
   await page.goto(process.env.BASE_URL);
-  await page.getByRole('link', { name: /about/i}).click();
-  await page.getByRole('link', { name: /projects/i}).click();
-  await page.getByRole('link', { name: /resume/i}).click();
-  await page.getByRole('link', { name: /cat/i}).click();
+  const siteNav = page
+    .locator('header')
+    .getByRole('navigation', { name: 'Site navigation' });
+  await siteNav.getByRole('link', { name: /about/i }).click();
+  await siteNav.getByRole('link', { name: /projects/i }).click();
+  await siteNav.getByRole('link', { name: /resume/i }).click();
+  await siteNav.getByRole('link', { name: /cat/i }).click();
 });
 
 test('has footer', async ({page}) => {
